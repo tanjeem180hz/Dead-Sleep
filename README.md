@@ -30,8 +30,6 @@
 
 <br />
 
----
-
 ## 📖 About The Project
 
 **Dead Sleep** is an Android application built to solve bedtime digital distraction. Many people struggle to put their phones away before sleeping, leading to poor sleep quality and late mornings.
