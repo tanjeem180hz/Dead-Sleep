@@ -74,7 +74,6 @@ The concept is straightforward:
 - **Language:** Java
 - **Platform:** Android (Android SDK)
 - **Architecture:** Object-Oriented Programming (OOP)
-- **Interactive Simulator:** React · Tailwind CSS · Vite ([Live Demo](https://tanjeem180hz.github.io/))
 
 <br />
 
