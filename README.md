@@ -23,7 +23,6 @@
   [![Java](https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white)](https://www.java.com)
   [![Android](https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
   [![OOP](https://img.shields.io/badge/Architecture-OOP-8C7CFB?style=flat-square)](https://en.wikipedia.org/wiki/Object-oriented_programming)
-  [![Status](https://img.shields.io/badge/Status-%20Project-blue?style=flat-square)](#team)
   [![Demo](https://img.shields.io/badge/Demo-Web%20Simulator-success?style=flat-square)](https://tanjeem180hz.github.io/)
 
 </div>
