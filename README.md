@@ -32,24 +32,6 @@
 
 ---
 
-## 📱 Interactive Preview
-
-<div align="center">
-
-  <a href="https://tanjeem180hz.github.io/">
-    <img src="assets/demo.gif" alt="Dead Sleep app demo" width="720" onerror="this.parentElement.innerHTML='<br/><blockquote><b>🌐 <a href=\'https://tanjeem180hz.github.io/\'>Click here to experience the interactive web demo</a></b><br/><i>Simulate the real-time phone interface, sleep schedules, and puzzle alarms.</i></blockquote><br/>'"/>
-  </a>
-
-  <br />
-
-  <a href="https://tanjeem180hz.github.io/">
-    <img src="https://img.shields.io/badge/▶_Explore_Interactive_Simulator-Click_to_Open-5B8CFF?style=for-the-badge&logo=safari&logoColor=white" alt="Open Simulator" height="32" />
-  </a>
-
-</div>
-
-<br />
-
 ## 📖 About The Project
 
 **Dead Sleep** is an Android application built to solve bedtime digital distraction. Many people struggle to put their phones away before sleeping, leading to poor sleep quality and late mornings.
