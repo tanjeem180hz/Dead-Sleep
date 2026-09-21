@@ -1,77 +1,119 @@
-# 🌙 Dead Sleep
+<div align="center">
 
-**Sleep on time. Wake up on time.**
+  # 🌙 Dead Sleep
+  ### *Sleep on time. Wake up on time.*
 
-![Java](https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white)
-![Android](https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=android&logoColor=white)
-![OOP](https://img.shields.io/badge/Object--Oriented-Design-8C7CFB?style=flat-square)
-![Status](https://img.shields.io/badge/Status-Student%20Project-blue?style=flat-square)
-[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Visit%20Website-8C7CFB?style=flat-square)](https://tanjeem180hz.github.io/)
+  <p align="center">
+    A smart Android bedtime companion designed to build healthier sleep routines through automated app blocking, proactive bedtime nudges, and interactive puzzle wake-up alarms.
+  </p>
+
+  <br />
+
+  <a href="https://tanjeem180hz.github.io/">
+    <img src="https://img.shields.io/badge/🚀_Launch_Live_Web_Demo-8C7CFB?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Demo" height="38" />
+  </a>
+
+  <p align="center">
+    <sub>✨ <i>Test the interactive phone simulator, schedules & challenge alarms directly in your browser.</i></sub>
+  </p>
+
+  <br />
+
+  [![Java](https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white)](https://www.java.com)
+  [![Android](https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
+  [![OOP](https://img.shields.io/badge/Architecture-OOP-8C7CFB?style=flat-square)](https://en.wikipedia.org/wiki/Object-oriented_programming)
+  [![Status](https://img.shields.io/badge/Status-Student%20Project-blue?style=flat-square)](#team)
+  [![Demo](https://img.shields.io/badge/Demo-Web%20Simulator-success?style=flat-square)](https://tanjeem180hz.github.io/)
+
+</div>
+
+<br />
 
 ---
 
-### 🌐 Live Web Demo
-Experience the interactive app preview and animated walkthrough directly in your browser:  
-👉 **[https://tanjeem180hz.github.io](https://tanjeem180hz.github.io/)**
+## 📱 Interactive Preview
 
----
+<div align="center">
 
-<p align="center">
-  <img src="assets/demo.gif" alt="Dead Sleep app demo" width="700">
-</p>
+  <a href="https://tanjeem180hz.github.io/">
+    <img src="assets/demo.gif" alt="Dead Sleep app demo" width="720" onerror="this.parentElement.innerHTML='<br/><blockquote><b>🌐 <a href=\'https://tanjeem180hz.github.io/\'>Click here to experience the interactive web demo</a></b><br/><i>Simulate the real-time phone interface, sleep schedules, and puzzle alarms.</i></blockquote><br/>'"/>
+  </a>
 
-<!--
-  Replace assets/demo.gif with the exported clip from the app demo.
-  Create an /assets folder in your repo root and drop the GIF/MP4 there,
-  or update the path above to wherever you host it.
--->
+  <br />
 
-## About
+  <a href="https://tanjeem180hz.github.io/">
+    <img src="https://img.shields.io/badge/▶_Explore_Interactive_Simulator-Click_to_Open-5B8CFF?style=for-the-badge&logo=safari&logoColor=white" alt="Open Simulator" height="32" />
+  </a>
 
-Dead Sleep is a Java-based Android project made to help users sleep on time, wake up on time, and reduce unnecessary phone distractions during their sleeping hours.
+</div>
 
-The idea is simple: the user sets a sleep schedule, chooses distracting apps, and the app helps them stay away from those apps during that time.
+<br />
 
-You can also test the full animated concept on the live web demo at [tanjeem180hz.github.io](https://tanjeem180hz.github.io/).
+## 📖 About The Project
 
-## Main Features
+**Dead Sleep** is an Android application built to solve bedtime digital distraction. Many people struggle to put their phones away before sleeping, leading to poor sleep quality and late mornings.
 
-- Set a personal sleep and wake-up schedule.
-- Get a reminder before sleep time.
-- Automatically start sleep mode at the scheduled time.
-- Keep selected distracting apps restricted during sleep time.
-- The Dead Sleep app cannot be deleted during the scheduled sleep time.
-- Show a smart alarm at wake-up time.
-- Stop the alarm only after completing a puzzle, math problem, game, or other challenge.
-- Allow users to customize their alarm settings.
+The concept is straightforward:
+1. **Plan:** The user defines their sleep schedule and selects distracting applications (social media, games, video streaming).
+2. **Restrict:** Once sleep mode begins, selected apps lock automatically, and the application defends itself from being uninstalled during bedtime.
+3. **Awaken:** In the morning, the alarm will **not** stop with a simple tap — you must solve a puzzle or math challenge to prove you are awake.
 
-## Main Modules
+<br />
 
-| Module | Responsibility |
-|---|---|
-| **User Setup** | First-time onboarding and preference collection |
-| **Sleep Schedule** | Sleep/wake time selection and weekly repeat rules |
-| **App Restriction** | Selecting and locking distracting apps during sleep |
-| **Reminder System** | Bedtime notifications ahead of scheduled sleep |
-| **Smart Alarm** | Wake-up alarm with sound, volume, and snooze settings |
-| **Challenge System** | Puzzle / math / game challenge required to stop the alarm |
-| **Settings** | App-wide configuration and personalization |
+## ✨ Key Features
 
-## Tech Stack
+| Icon | Feature | Description |
+| :---: | :--- | :--- |
+| 🕒 | **Personal Sleep Schedule** | Configure target sleep & wake-up times with customizable weekly repeat rules. |
+| 🔔 | **Bedtime Nudge** | Proactive reminder notification sent 30 minutes before sleep mode begins. |
+| 🌙 | **Automated Sleep Mode** | Automatically locks down selected distracting apps as soon as bedtime arrives. |
+| 🚫 | **App Lockout** | Prevents opening restricted apps (social, games, browsers) during sleep hours. |
+| 🛡️ | **Tamper Protection** | Protects the Dead Sleep app from being uninstalled during scheduled sleep time. |
+| ⏰ | **Smart Wake Alarm** | Hard-to-ignore alarm with customizable ringtones, volume levels, and snooze controls. |
+| 🧩 | **Cognitive Challenge** | Dismiss the morning alarm only after completing a math puzzle, memory game, or challenge. |
+
+<br />
+
+## 🏗️ Core Modules
+
+| Module | Core Responsibility |
+| :--- | :--- |
+| **User Setup** | First-launch onboarding and baseline preference configuration |
+| **Sleep Schedule** | Manages sleep/wake windows and day-of-week recurrence |
+| **App Restriction** | Background usage tracking and application locking during sleep hours |
+| **Reminder System** | Scheduled bedtime alert delivery prior to sleep mode initiation |
+| **Smart Alarm** | Audio playback, volume management, and snooze handling |
+| **Challenge System** | Generates and validates interactive puzzles required to silence the alarm |
+| **Settings** | App-wide customization, exemptions, and user preferences |
+
+<br />
+
+## 🛠️ Tech Stack
 
 - **Language:** Java
-- **Platform:** Android
+- **Platform:** Android (Android SDK)
 - **Architecture:** Object-Oriented Programming (OOP)
+- **Interactive Simulator:** React · Tailwind CSS · Vite ([Live Demo](https://tanjeem180hz.github.io/))
 
-## Future Improvements
+<br />
 
-- Add more types of alarm challenges.
-- Add weekly sleep statistics and progress.
-- Give better routine suggestions based on user habits.
-- Add more flexible app restriction options.
-- Improve the UI and personalization.
-- Add more smart reminder options.
+## 🔮 Future Improvements
 
-## Team
+- [ ] **More Challenge Types:** Reaction tests, pattern memory, and shake-to-wake modes.
+- [ ] **Sleep Statistics:** Weekly progress charts and sleep consistency scoring.
+- [ ] **Intelligent Routines:** Personalized recommendations based on sleep habits.
+- [ ] **Flexible Restrictions:** Whitelist essential contacts and emergency apps.
+- [ ] **Refined UI:** Modern Material 3 styling with adaptive dark/light themes.
 
-Team Project — built as part of an Android application development.
+<br />
+
+## 👥 Team
+
+> 🎓 **Student Team Project** — Developed as part of an Android Application Development course.
+
+---
+
+<div align="center">
+  <sub>🌙 <b>Dead Sleep</b> · Sleep on time. Wake up on time.</sub><br/>
+  <sub>Designed for healthier digital habits & restful nights.</sub>
+</div>
