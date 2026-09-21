@@ -109,7 +109,7 @@ The concept is straightforward:
 
 ## 👥 Team
 
-> 🎓 **Student Team Project** — Developed as part of an Android Application Development course.
+> 🎓 **Team Project** — Developed as part of an Android Application Development.
 
 ---
 
