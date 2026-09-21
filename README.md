@@ -6,6 +6,15 @@
 ![Android](https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![OOP](https://img.shields.io/badge/Object--Oriented-Design-8C7CFB?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Student%20Project-blue?style=flat-square)
+[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Visit%20Website-8C7CFB?style=flat-square)](https://tanjeem180hz.github.io/)
+
+---
+
+### 🌐 Live Web Demo
+Experience the interactive app preview and animated walkthrough directly in your browser:  
+👉 **[https://tanjeem180hz.github.io](https://tanjeem180hz.github.io/)**
+
+---
 
 <p align="center">
   <img src="assets/demo.gif" alt="Dead Sleep app demo" width="700">
@@ -22,6 +31,8 @@
 Dead Sleep is a Java-based Android project made to help users sleep on time, wake up on time, and reduce unnecessary phone distractions during their sleeping hours.
 
 The idea is simple: the user sets a sleep schedule, chooses distracting apps, and the app helps them stay away from those apps during that time.
+
+You can also test the full animated concept on the live web demo at [tanjeem180hz.github.io](https://tanjeem180hz.github.io/).
 
 ## Main Features
 
