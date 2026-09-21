@@ -1,6 +1,7 @@
 <div align="center">
 
-  # 🌙 Dead Sleep
+  # <img width="100" height="100" alt="dead-sleep-icon-1024-Photoroom" src="https://github.com/user-attachments/assets/b950bf83-a9a2-49c9-b33c-46b7746e4d79"/>
+  Dead Sleep
   ### *Sleep on time. Wake up on time.*
 
   <p align="center">
