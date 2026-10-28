@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Set bedtime & wake routines with repeat rules."
+            android:text="Set bedtime &amp; wake routines with repeat rules."
             android:textColor="@color/md_theme_dark_onSurfaceVariant"
             android:textSize="14sp" />
 
