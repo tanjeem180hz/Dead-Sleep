@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Dead Sleep</string>
+    <string name="tagline">Sleep on time. Wake up on time.</string>
+    <string name="accessibility_service_description">Dead Sleep uses accessibility events to detect when restricted distracting apps are opened during your scheduled bedtime, locking them until morning, and defending against unauthorized uninstallation while sleep mode is active. No personal information is collected or leaves your device.</string>
 </resources>
