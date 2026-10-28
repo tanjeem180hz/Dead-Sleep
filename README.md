@@ -73,7 +73,7 @@ Ready to use on any Android smartphone, tablet, or foldable. No developer tools 
 | **Target Android** | Android 15 (`API 35` - Latest Stable) |
 | **Processor Architecture** | Universal bytecode (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`) |
 | **Signature Schemes** | `v1 (JAR)` + `v2 (APK Signature Scheme v2)` verified |
-| **SHA-256 Checksum** | `0F6960F51D9FE1246EBD841C16F42492150566D5D37E55E7FEFBFA8DC542AB33` |
+| **SHA-256 Checksum** | `1EF303D9357D13B8B6BDD36BA99D1D5BF06C83C97D5B703981089F380577B965` |
 | **Network Permission** | None (100% Offline, Zero data leaves your device) |
 
 ### 📲 Easy 3-Step Installation Guide

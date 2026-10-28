@@ -35,7 +35,10 @@ public class PermissionWizardActivity extends AppCompatActivity {
         btnContinue = findViewById(R.id.btnContinue);
 
         btnContinue.setOnClickListener(v -> {
-            startActivity(new Intent(this, MainActivity.class));
+            com.deadsleep.app.data.PreferencesManager.getInstance(this).setOnboardingCompleted(true);
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
             finish();
         });
     }

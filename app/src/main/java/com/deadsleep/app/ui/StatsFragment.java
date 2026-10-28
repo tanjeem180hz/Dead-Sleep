@@ -50,6 +50,7 @@ public class StatsFragment extends Fragment {
 
             if (isAdded() && getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
+                    if (binding == null) return;
                     binding.gaugeConsistency.setScore(consistency);
                     binding.chartSleepDuration.setData(chartPoints);
 

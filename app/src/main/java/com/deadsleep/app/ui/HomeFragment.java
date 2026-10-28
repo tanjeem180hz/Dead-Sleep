@@ -1,5 +1,6 @@
 package com.deadsleep.app.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,6 +34,7 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private final Handler countdownHandler = new Handler(Looper.getMainLooper());
     private Runnable countdownRunnable;
+    private long cachedNextSleepTime = -1;
 
     @Nullable
     @Override
@@ -46,17 +48,23 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.btnStartSleepNow.setOnClickListener(v -> {
-            long scheduleId = PreferencesManager.getInstance(requireContext()).getCurrentScheduleId();
-            SleepModeManager.getInstance(requireContext()).startSleepMode(scheduleId);
-            startActivity(new Intent(requireContext(), SleepModeActiveActivity.class));
+            Context ctx = getContext();
+            if (ctx == null) return;
+            long scheduleId = PreferencesManager.getInstance(ctx).getCurrentScheduleId();
+            SleepModeManager.getInstance(ctx).startSleepMode(scheduleId);
+            startActivity(new Intent(ctx, SleepModeActiveActivity.class));
         });
 
         binding.btnFixPermissions.setOnClickListener(v -> {
-            startActivity(new Intent(requireContext(), PermissionWizardActivity.class));
+            Context ctx = getContext();
+            if (ctx == null) return;
+            startActivity(new Intent(ctx, PermissionWizardActivity.class));
         });
 
         binding.btnViewAdvice.setOnClickListener(v -> {
-            startActivity(new Intent(requireContext(), RoutineAdvisorActivity.class));
+            Context ctx = getContext();
+            if (ctx == null) return;
+            startActivity(new Intent(ctx, RoutineAdvisorActivity.class));
         });
     }
 
@@ -74,17 +82,18 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateUI() {
-        if (!isAdded()) return;
+        Context ctx = getContext();
+        if (ctx == null || !isAdded() || binding == null) return;
 
-        PreferencesManager prefs = PreferencesManager.getInstance(requireContext());
+        PreferencesManager prefs = PreferencesManager.getInstance(ctx);
         binding.tvHomeGreeting.setText("Welcome, " + prefs.getUserName() + " 🌙");
 
         // Permission health check
-        boolean allGood = PermissionUtils.areAllCriticalPermissionsGranted(requireContext());
+        boolean allGood = PermissionUtils.areAllCriticalPermissionsGranted(ctx);
         binding.cardSetupHealth.setVisibility(allGood ? View.GONE : View.VISIBLE);
 
         // Streaks
-        int streak = StatsManager.getInstance(requireContext()).getCurrentStreak();
+        int streak = StatsManager.getInstance(ctx).getCurrentStreak();
         binding.tvStreakCount.setText(streak + " Day Streak");
         if (streak > 0) {
             binding.tvStreakSubtitle.setText("Keep your bedtime streak going tonight!");
@@ -92,18 +101,28 @@ public class HomeFragment extends Fragment {
             binding.tvStreakSubtitle.setText("Solve wake-up challenge to start a streak");
         }
 
-        // Active schedule details
+        // Active schedule details & Next sleep calculation on background thread
         AppDatabase.getExecutor().execute(() -> {
-            List<SleepSchedule> enabled = DeadSleepRepository.getInstance(requireContext()).getEnabledSchedulesSync();
-            if (isAdded() && getActivity() != null) {
-                getActivity().runOnUiThread(() -> {
-                    if (enabled.isEmpty()) {
-                        binding.tvNextScheduleDetail.setText("No active schedules. Tap Schedules tab to add one.");
-                    } else {
-                        SleepSchedule s = enabled.get(0);
-                        binding.tvNextScheduleDetail.setText(s.getName() + ": " + s.getFormattedSleepTime() + " → " + s.getFormattedWakeTime());
-                    }
-                });
+            try {
+                Context bgCtx = getContext();
+                if (bgCtx == null) return;
+                List<SleepSchedule> enabled = DeadSleepRepository.getInstance(bgCtx).getEnabledSchedulesSync();
+                long remainingMillis = ScheduleManager.getInstance(bgCtx).getMillisUntilNextSleep();
+                cachedNextSleepTime = remainingMillis > 0 ? (System.currentTimeMillis() + remainingMillis) : -1;
+
+                if (isAdded() && getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        if (binding == null) return;
+                        if (enabled == null || enabled.isEmpty()) {
+                            binding.tvNextScheduleDetail.setText("No active schedules. Tap Schedules tab to add one.");
+                        } else {
+                            SleepSchedule s = enabled.get(0);
+                            binding.tvNextScheduleDetail.setText(s.getName() + ": " + s.getFormattedSleepTime() + " → " + s.getFormattedWakeTime());
+                        }
+                        updateCountdownText();
+                    });
+                }
+            } catch (Exception ignored) {
             }
         });
     }
@@ -113,17 +132,26 @@ public class HomeFragment extends Fragment {
         countdownRunnable = new Runnable() {
             @Override
             public void run() {
-                if (!isAdded()) return;
-                long remainingMillis = ScheduleManager.getInstance(requireContext()).getMillisUntilNextSleep();
-                if (remainingMillis <= 0) {
-                    binding.tvCountdownTimer.setText("00:00");
-                } else {
-                    binding.tvCountdownTimer.setText(TimeUtils.formatCountdown(remainingMillis));
-                }
+                if (!isAdded() || binding == null) return;
+                updateCountdownText();
                 countdownHandler.postDelayed(this, 1000);
             }
         };
         countdownHandler.post(countdownRunnable);
+    }
+
+    private void updateCountdownText() {
+        if (binding == null) return;
+        if (cachedNextSleepTime <= 0) {
+            binding.tvCountdownTimer.setText("00:00");
+        } else {
+            long remaining = cachedNextSleepTime - System.currentTimeMillis();
+            if (remaining <= 0) {
+                binding.tvCountdownTimer.setText("00:00");
+            } else {
+                binding.tvCountdownTimer.setText(TimeUtils.formatCountdown(remaining));
+            }
+        }
     }
 
     private void stopCountdown() {
@@ -136,6 +164,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        stopCountdown();
         binding = null;
     }
 }

@@ -204,15 +204,19 @@ public class ScheduleManager {
      * Computes remaining milliseconds until next sleep mode starts for countdown UI.
      */
     public long getMillisUntilNextSleep() {
-        List<SleepSchedule> enabled = repository.getEnabledSchedulesSync();
-        if (enabled.isEmpty()) return -1;
+        try {
+            List<SleepSchedule> enabled = repository.getEnabledSchedulesSync();
+            if (enabled == null || enabled.isEmpty()) return -1;
 
-        SleepSchedule next = findNextActiveSchedule(enabled);
-        if (next == null) return -1;
+            SleepSchedule next = findNextActiveSchedule(enabled);
+            if (next == null) return -1;
 
-        long nextSleep = TimeUtils.getNextOccurrenceMillis(
-                next.getSleepHour(), next.getSleepMinute(), next.getDaysOfWeek()
-        );
-        return Math.max(0, nextSleep - System.currentTimeMillis());
+            long nextSleep = TimeUtils.getNextOccurrenceMillis(
+                    next.getSleepHour(), next.getSleepMinute(), next.getDaysOfWeek()
+            );
+            return Math.max(0, nextSleep - System.currentTimeMillis());
+        } catch (Exception e) {
+            return -1;
+        }
     }
 }

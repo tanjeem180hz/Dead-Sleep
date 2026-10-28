@@ -61,11 +61,19 @@ public abstract class AppDatabase extends RoomDatabase {
                             "dead_sleep_database"
                     )
                     .fallbackToDestructiveMigration()
+                    .allowMainThreadQueries()
                     .addCallback(new Callback() {
                         @Override
                         public void onCreate(@NonNull SupportSQLiteDatabase db) {
                             super.onCreate(db);
-                            DB_EXECUTOR.execute(() -> populateInitialData(INSTANCE));
+                            DB_EXECUTOR.execute(() -> {
+                                try {
+                                    AppDatabase dbInstance = getInstance(context);
+                                    if (dbInstance != null) {
+                                        populateInitialData(dbInstance);
+                                    }
+                                } catch (Exception ignored) {}
+                            });
                         }
                     })
                     .build();

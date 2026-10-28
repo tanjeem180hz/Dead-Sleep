@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.navHostFragment, homeFragment)
-                    .commit();
+                    .commitAllowingStateLoss();
         }
 
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             if (selected != null) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.navHostFragment, selected)
-                        .commit();
+                        .commitAllowingStateLoss();
                 return true;
             }
             return false;
