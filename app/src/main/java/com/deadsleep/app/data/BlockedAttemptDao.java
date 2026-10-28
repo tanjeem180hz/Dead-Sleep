@@ -28,6 +28,6 @@ public interface BlockedAttemptDao {
     @Query("SELECT COUNT(*) FROM blocked_attempts")
     int getTotalBlockedCount();
 
-    @Query("SELECT packageName, COUNT(*) as count FROM blocked_attempts GROUP BY packageName ORDER BY count DESC LIMIT 1")
+    @Query("SELECT packageName FROM blocked_attempts GROUP BY packageName ORDER BY COUNT(*) DESC LIMIT 1")
     String getMostBlockedPackage();
 }
