@@ -10,6 +10,10 @@
 
   <br />
 
+  <a href="https://github.com/tanjeem180hz/Dead-Sleep/raw/main/release/DeadSleep-v1.0.0.apk">
+    <img src="https://img.shields.io/badge/📥_Download_Direct_APK_(v1.0.0)-22c55e?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" height="38" />
+  </a>
+  &nbsp;&nbsp;
   <a href="https://tanjeem180hz.github.io/">
     <img src="https://img.shields.io/badge/🚀_Launch_Live_Web_Demo-8C7CFB?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Demo" height="38" />
   </a>
