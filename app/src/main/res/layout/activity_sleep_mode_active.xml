@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#06080E"
+    android:padding="32dp">
+
+    <ImageView
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:src="@drawable/ic_launcher_foreground"
+        android:contentDescription="Moon" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Sleep Mode Active 🌙"
+        android:textColor="@color/md_theme_dark_onBackground"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvActiveWakeTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Wake-up scheduled for 7:00 AM"
+        android:textColor="@color/md_theme_dark_primary"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tvActiveCountdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="06:30:15"
+        android:textColor="@color/md_theme_dark_secondary"
+        android:textSize="40sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Distracting apps are locked.\nAlarms will sound at wake-up time."
+        android:textColor="@color/md_theme_dark_onSurfaceVariant"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:lineSpacingExtra="4dp" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Emergency Exit Section -->
+    <TextView
+        android:id="@+id/tvEmergencyHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="In an emergency, hold button below for 10 seconds"
+        android:textColor="#8C6666"
+        android:textSize="12sp"
+        android:gravity="center" />
+
+    <ProgressBar
+        android:id="@+id/pbEmergencyHold"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="8dp"
+        android:max="100"
+        android:progress="0"
+        android:visibility="invisible"
+        android:progressTint="@color/md_theme_dark_error" />
+
+    <Button
+        android:id="@+id/btnEmergencyUnlock"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginTop="8dp"
+        android:text="Emergency Unlock"
+        android:textColor="@color/md_theme_dark_error" />
+
+</LinearLayout>

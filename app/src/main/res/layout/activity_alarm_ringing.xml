@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="#0A0714"
+    android:padding="32dp">
+
+    <TextView
+        android:id="@+id/tvAlarmRingingLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Morning Wake-Up ☀️"
+        android:textColor="@color/md_theme_dark_secondary"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvAlarmRingingClock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="07:00"
+        android:textColor="@color/md_theme_dark_onBackground"
+        android:textSize="64sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="The alarm will keep ringing until you prove you are awake!"
+        android:textColor="@color/md_theme_dark_onSurfaceVariant"
+        android:textSize="14sp"
+        android:gravity="center" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/btnSnoozeAlarm"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginBottom="16dp"
+        android:text="Snooze (3 left)"
+        android:textColor="@color/md_theme_dark_secondary" />
+
+    <Button
+        android:id="@+id/btnSolveChallenge"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:text="🧠 Solve Challenge to Stop Alarm"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:backgroundTint="@color/md_theme_dark_primary"
+        android:textColor="@color/md_theme_dark_onPrimary" />
+
+    <!-- Emergency stop after long timeout -->
+    <Button
+        android:id="@+id/btnEmergencyStopAlarm"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Emergency Stop (Hold 5s)"
+        android:textColor="#8C6666"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+</LinearLayout>
