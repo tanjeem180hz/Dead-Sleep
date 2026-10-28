@@ -49,7 +49,7 @@ public class MemoryChallenge extends Challenge {
     private Card firstSelected = null;
     private Button firstButton = null;
     private boolean isBusy = false;
-    private final Handler handler = new Handler(Looper.getMainLooper());
+    private Handler handler;
 
     public MemoryChallenge(Difficulty difficulty) {
         super(difficulty);
