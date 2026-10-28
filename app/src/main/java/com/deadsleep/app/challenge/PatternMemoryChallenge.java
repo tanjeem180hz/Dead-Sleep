@@ -42,7 +42,7 @@ public class PatternMemoryChallenge extends Challenge {
     private final List<Integer> userSequence = new ArrayList<>();
     private final int targetLength;
     private final Random random = new Random();
-    private final Handler handler = new Handler(Looper.getMainLooper());
+    private Handler handler;
     private boolean isPlayingSequence = false;
 
     public PatternMemoryChallenge(Difficulty difficulty) {
@@ -96,6 +96,9 @@ public class PatternMemoryChallenge extends Challenge {
 
     @Override
     public View renderView(Context context, ViewGroup container, ChallengeCallback callback) {
+        if (handler == null) {
+            handler = new Handler(Looper.getMainLooper());
+        }
         LinearLayout root = new LinearLayout(context);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -213,6 +216,8 @@ public class PatternMemoryChallenge extends Challenge {
 
     @Override
     public void cleanup() {
-        handler.removeCallbacksAndMessages(null);
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
     }
 }

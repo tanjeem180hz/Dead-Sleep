@@ -195,6 +195,8 @@ public class ReactionChallenge extends Challenge {
 
     @Override
     public void cleanup() {
-        handler.removeCallbacksAndMessages(null);
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
     }
 }
