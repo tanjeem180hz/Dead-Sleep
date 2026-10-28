@@ -190,6 +190,10 @@ public class DeadSleepRepository {
         return database.blockedAttemptDao().getTotalBlockedCount();
     }
 
+    public String getMostBlockedPackage() {
+        return database.blockedAttemptDao().getMostBlockedPackage();
+    }
+
     public interface OnResultListener<T> {
         void onResult(T result);
     }
