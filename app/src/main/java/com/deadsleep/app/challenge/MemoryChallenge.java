@@ -113,6 +113,9 @@ public class MemoryChallenge extends Challenge {
 
     @Override
     public View renderView(Context context, ViewGroup container, ChallengeCallback callback) {
+        if (handler == null) {
+            handler = new Handler(Looper.getMainLooper());
+        }
         LinearLayout root = new LinearLayout(context);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -214,6 +217,8 @@ public class MemoryChallenge extends Challenge {
 
     @Override
     public void cleanup() {
-        handler.removeCallbacksAndMessages(null);
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
     }
 }

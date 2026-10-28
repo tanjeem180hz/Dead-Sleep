@@ -34,7 +34,7 @@ public class ReactionChallenge extends Challenge {
     private long greenTimestamp = 0;
     private State currentState = State.WAITING_TO_START;
 
-    private final Handler handler = new Handler(Looper.getMainLooper());
+    private Handler handler;
     private final Random random = new Random();
 
     public ReactionChallenge(Difficulty difficulty) {
@@ -81,6 +81,9 @@ public class ReactionChallenge extends Challenge {
 
     @Override
     public View renderView(Context context, ViewGroup container, ChallengeCallback callback) {
+        if (handler == null) {
+            handler = new Handler(Looper.getMainLooper());
+        }
         LinearLayout root = new LinearLayout(context);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setGravity(Gravity.CENTER_HORIZONTAL);
