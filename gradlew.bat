@@ -39,7 +39,9 @@ for %%i in ("%APP_HOME%") do set APP_HOME=%%~fi
 set DEFAULT_JVM_OPTS=-Dfile.encoding=UTF-8 "-Xmx64m" "-Xms64m"
 
 if not defined JAVA_HOME (
-    if exist "C:\Program Files\Android\Android Studio\jbr" (
+    if exist "%USERPROFILE%\.jdks\jdk-17.0.20.1+1" (
+        set "JAVA_HOME=%USERPROFILE%\.jdks\jdk-17.0.20.1+1"
+    ) else if exist "C:\Program Files\Android\Android Studio\jbr" (
         set "JAVA_HOME=C:\Program Files\Android\Android Studio\jbr"
     )
 )
