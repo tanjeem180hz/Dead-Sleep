@@ -1,5 +1,6 @@
 # Built application files
 *.apk
+!/release/*.apk
 *.aar
 *.ap_
 *.aab
@@ -34,6 +35,7 @@ captures/
 
 # Keystore files
 *.jks
+!app/keystore/*.jks
 *.keystore
 
 # OS generated files

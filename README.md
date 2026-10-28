@@ -32,10 +32,11 @@
 ---
 
 ## 📖 Table of Contents
-1. [Core Product Concept](#-core-product-concept)
-2. [Architecture & Design Principles](#-architecture--design-principles)
-3. [Package Structure](#-package-structure)
-4. [Complete Feature Breakdown](#-complete-feature-breakdown)
+1. [Direct APK Download & Installation](#-direct-apk-download--quick-installation)
+2. [Core Product Concept](#-core-product-concept)
+3. [Architecture & Design Principles](#-architecture--design-principles)
+4. [Package Structure](#-package-structure)
+5. [Complete Feature Breakdown](#-complete-feature-breakdown)
    - [User Setup & Guided Permission Wizard](#1-user-setup--permission-wizard)
    - [Sleep Schedule Management](#2-sleep-schedule-management)
    - [Bedtime Nudge System](#3-bedtime-nudge-system)
@@ -46,9 +47,53 @@
    - [Statistics & Consistency Scoring](#8-statistics--consistency-scoring)
    - [Intelligent Routine Advisor](#9-intelligent-routine-advisor)
    - [Whitelist & Emergency Exit](#10-whitelist--emergency-exit)
-5. [Permissions & OEM Optimization Guide](#-permissions--oem-optimization-guide)
-6. [How to Run in Android Studio](#-how-to-run-in-android-studio)
-7. [Testing & Verification](#-testing--verification)
+6. [Permissions & OEM Optimization Guide](#-permissions--oem-optimization-guide)
+7. [How to Run in Android Studio](#-how-to-run-in-android-studio)
+8. [Testing & Verification](#-testing--verification)
+
+---
+
+## 📥 Direct APK Download & Quick Installation
+
+Ready to use on any Android smartphone, tablet, or foldable. No developer tools or computer required.
+
+### 🔗 Download Links
+- 🚀 **[Direct Download: DeadSleep-v1.0.0.apk (6.50 MB)](https://github.com/tanjeem180hz/Dead-Sleep/raw/main/release/DeadSleep-v1.0.0.apk)**
+- 📁 **[Browse File in GitHub Repository](https://github.com/tanjeem180hz/Dead-Sleep/blob/main/release/DeadSleep-v1.0.0.apk)**
+
+### 📱 Build & Package Specifications
+| Attribute | Specification |
+| :--- | :--- |
+| **App Name** | Dead Sleep |
+| **Package Name** | `com.deadsleep.app` |
+| **Version** | `1.0.0` (Build `1`) |
+| **File Name** | `DeadSleep-v1.0.0.apk` |
+| **File Size** | `6.50 MB` (6,504,481 bytes) |
+| **Minimum Android** | Android 8.0 Oreo (`API 26`) |
+| **Target Android** | Android 15 (`API 35` - Latest Stable) |
+| **Processor Architecture** | Universal bytecode (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`) |
+| **Signature Schemes** | `v1 (JAR)` + `v2 (APK Signature Scheme v2)` verified |
+| **SHA-256 Checksum** | `0F6960F51D9FE1246EBD841C16F42492150566D5D37E55E7FEFBFA8DC542AB33` |
+| **Network Permission** | None (100% Offline, Zero data leaves your device) |
+
+### 📲 Easy 3-Step Installation Guide
+1. **Download:** Click the green **[Download Direct APK](https://github.com/tanjeem180hz/Dead-Sleep/raw/main/release/DeadSleep-v1.0.0.apk)** button on your Android phone browser.
+2. **Enable Unknown Sources (if asked):**
+   - Tap the downloaded file in your browser's download manager or Files app.
+   - If Android shows *"For your security, your phone is not allowed to install unknown apps from this source"*, tap **Settings** and toggle **Allow from this source**.
+3. **Install & Launch:**
+   - Tap **Install** and then **Open**.
+   - Complete the short 4-page onboarding and guided 8-step permission wizard to activate automatic sleep lockdown and wake alarms.
+
+### 🌐 Universal Device Support
+Dead Sleep is tested and compatible across all major manufacturers and Android flavors:
+- **Google Pixel:** Pixel 3 through Pixel 9 Pro (Android 9 to Android 15)
+- **Samsung Galaxy:** S-Series, Z-Fold/Flip, A-Series, Note, M-Series (One UI 2.0 to One UI 7.0)
+- **Xiaomi / Redmi / POCO:** MIUI 10 to MIUI 14 & Xiaomi HyperOS
+- **OnePlus / OPPO / Realme:** OxygenOS, ColorOS, Realme UI
+- **Vivo / iQOO:** Funtouch OS, OriginOS
+- **Motorola / Nokia / Nothing Phone / Sony / ASUS:** Stock & Custom Android builds
+
 
 ---
 
