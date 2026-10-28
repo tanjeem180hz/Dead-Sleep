@@ -1,0 +1,21 @@
+<resources>
+    <!-- Deep night theme with warm moon gold accent -->
+    <color name="md_theme_dark_primary">#9D85FF</color>
+    <color name="md_theme_dark_onPrimary">#1A0065</color>
+    <color name="md_theme_dark_primaryContainer">#35248A</color>
+    <color name="md_theme_dark_onPrimaryContainer">#E5DEFF</color>
+    <color name="md_theme_dark_secondary">#FFD56B</color>
+    <color name="md_theme_dark_onSecondary">#422C00</color>
+    <color name="md_theme_dark_secondaryContainer">#5F4100</color>
+    <color name="md_theme_dark_onSecondaryContainer">#FFE08D</color>
+    <color name="md_theme_dark_background">#0B0E17</color>
+    <color name="md_theme_dark_onBackground">#E2E2EC</color>
+    <color name="md_theme_dark_surface">#121624</color>
+    <color name="md_theme_dark_onSurface">#E2E2EC</color>
+    <color name="md_theme_dark_surfaceVariant">#1C2237</color>
+    <color name="md_theme_dark_onSurfaceVariant">#C7C5D0</color>
+    <color name="md_theme_dark_error">#FFB4AB</color>
+    <color name="md_theme_dark_onError">#690005</color>
+    <color name="moon_accent">#FFD700</color>
+    <color name="card_bg">#181D30</color>
+</resources>
