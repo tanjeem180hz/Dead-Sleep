@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <!-- Foreground Service types for Android 10-15 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <application
         android:allowBackup="true"
@@ -8,15 +31,188 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DeadSleep">
-        
+
+        <!-- Splash Screen Launcher Activity -->
         <activity
-            android:name=".ui.MainActivity"
-            android:exported="true">
+            android:name=".ui.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.DeadSleep">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Activities -->
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".ui.OnboardingActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.PermissionWizardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.ScheduleEditActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".ui.AppPickerActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.WhitelistActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.LockOverlayActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:excludeFromRecents="true" />
+
+        <activity
+            android:name=".ui.SleepModeActiveActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:excludeFromRecents="true" />
+
+        <activity
+            android:name=".ui.AlarmRingingActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:excludeFromRecents="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:showForAllUsers="true" />
+
+        <activity
+            android:name=".ui.ChallengeActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:excludeFromRecents="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true" />
+
+        <activity
+            android:name=".ui.GoodMorningActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.StatsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.RoutineAdvisorActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.AlarmTestActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.AboutActivity"
+            android:exported="false" />
+
+        <!-- Services -->
+        <service
+            android:name=".service.AppLockAccessibilityService"
+            android:exported="true"
+            android:label="Dead Sleep Bedtime Lockout"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+
+        <service
+            android:name=".service.SleepModeForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse|dataSync">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Bedtime schedule lockdown and status monitor" />
+        </service>
+
+        <service
+            android:name=".service.AlarmForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+
+        <service
+            android:name=".service.UsageMonitorService"
+            android:exported="false" />
+
+        <!-- Receivers -->
+        <receiver
+            android:name=".receiver.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.TIME_SET" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".receiver.AlarmReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".receiver.NudgeReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.deadsleep.app.ACTION_START_SLEEP_NOW" />
+                <action android:name="com.deadsleep.app.ACTION_SNOOZE_NUDGE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".receiver.SleepStartReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.deadsleep.app.ACTION_START_SLEEP_NOW" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".receiver.SleepEndReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".receiver.DeadSleepDeviceAdminReceiver"
+            android:exported="true"
+            android:label="Dead Sleep Tamper Protection"
+            android:description="@string/accessibility_service_description"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin" />
+        </receiver>
+
+        <receiver
+            android:name=".receiver.PackageChangeReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <action android:name="android.intent.action.PACKAGE_FULLY_REMOVED" />
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
