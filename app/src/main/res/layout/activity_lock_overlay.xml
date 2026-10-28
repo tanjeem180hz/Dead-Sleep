@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#080B12"
+    android:padding="32dp">
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_launcher_foreground"
+        android:contentDescription="Moon" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Blocked by Dead Sleep 🌙"
+        android:textColor="@color/md_theme_dark_onBackground"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/tvBlockedAppName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/md_theme_dark_primary"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/tvLockQuote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="“Your future self will thank you for sleeping on time. Put the phone down and rest.”"
+        android:textColor="@color/md_theme_dark_onSurfaceVariant"
+        android:textSize="15sp"
+        android:textStyle="italic"
+        android:lineSpacingExtra="4dp"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/tvLockRemaining"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Wake time in --:--"
+        android:textColor="@color/md_theme_dark_secondary"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnGoToSleep"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="36dp"
+        android:text="Go to Sleep 🛌"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:backgroundTint="@color/md_theme_dark_primary"
+        android:textColor="@color/md_theme_dark_onPrimary" />
+
+</LinearLayout>
