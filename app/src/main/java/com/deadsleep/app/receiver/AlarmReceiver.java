@@ -14,15 +14,17 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        long scheduleId = -1;
-        String scheduleName = "Dead Sleep";
+        try {
+            long scheduleId = -1;
+            String scheduleName = "Dead Sleep";
 
-        if (intent != null) {
-            scheduleId = intent.getLongExtra(Constants.EXTRA_SCHEDULE_ID, -1);
-            scheduleName = intent.getStringExtra(Constants.EXTRA_SCHEDULE_NAME);
-            if (scheduleName == null) scheduleName = "Wake Up Alarm";
-        }
+            if (intent != null) {
+                scheduleId = intent.getLongExtra(Constants.EXTRA_SCHEDULE_ID, -1);
+                scheduleName = intent.getStringExtra(Constants.EXTRA_SCHEDULE_NAME);
+                if (scheduleName == null) scheduleName = "Wake Up Alarm";
+            }
 
-        DeadSleepAlarmManager.getInstance(context).startAlarm(scheduleId, scheduleName);
+            DeadSleepAlarmManager.getInstance(context).startAlarm(scheduleId, scheduleName);
+        } catch (Exception ignored) {}
     }
 }
