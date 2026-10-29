@@ -26,36 +26,49 @@ public class SleepModeForegroundService extends Service {
             scheduleId = intent.getLongExtra(Constants.EXTRA_SCHEDULE_ID, -1);
         }
 
-        final long targetScheduleId = scheduleId;
-        AppDatabase.getExecutor().execute(() -> {
-            String wakeTime = "Morning";
-            if (targetScheduleId != -1) {
-                SleepSchedule schedule = DeadSleepRepository.getInstance(this).getScheduleById(targetScheduleId);
-                if (schedule != null) {
-                    wakeTime = schedule.getFormattedWakeTime();
-                }
-            }
-
+        // 1. Immediately promote to foreground to satisfy the Android 5-second startForeground contract
+        try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 if (Build.VERSION.SDK_INT >= 34) {
                     startForeground(
                             Constants.NOTIF_ID_SLEEP_MODE,
-                            NotificationHelper.buildSleepModeNotification(this, wakeTime),
+                            NotificationHelper.buildSleepModeNotification(this, "Morning"),
                             ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
                     );
                 } else {
                     startForeground(
                             Constants.NOTIF_ID_SLEEP_MODE,
-                            NotificationHelper.buildSleepModeNotification(this, wakeTime),
+                            NotificationHelper.buildSleepModeNotification(this, "Morning"),
                             ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
                     );
                 }
             } else {
                 startForeground(
                         Constants.NOTIF_ID_SLEEP_MODE,
-                        NotificationHelper.buildSleepModeNotification(this, wakeTime)
+                        NotificationHelper.buildSleepModeNotification(this, "Morning")
                 );
             }
+        } catch (Exception ignored) {}
+
+        // 2. Asynchronously retrieve the exact wake time and update notification
+        final long targetScheduleId = scheduleId;
+        AppDatabase.getExecutor().execute(() -> {
+            try {
+                String wakeTime = "Morning";
+                if (targetScheduleId != -1) {
+                    SleepSchedule schedule = DeadSleepRepository.getInstance(this).getScheduleById(targetScheduleId);
+                    if (schedule != null) {
+                        wakeTime = schedule.getFormattedWakeTime();
+                    }
+                }
+                android.app.NotificationManager nm = (android.app.NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                if (nm != null) {
+                    nm.notify(
+                            Constants.NOTIF_ID_SLEEP_MODE,
+                            NotificationHelper.buildSleepModeNotification(this, wakeTime)
+                    );
+                }
+            } catch (Exception ignored) {}
         });
 
         return START_STICKY;
