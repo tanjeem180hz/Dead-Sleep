@@ -140,10 +140,42 @@ public class ShakeChallenge extends Challenge implements SensorEventListener {
         tvHint.setPadding(0, 16, 0, 0);
         content.addView(tvHint);
 
+        if (accelerometer == null) {
+            tvHint.setText("Sensor not detected. Tap button repeatedly to wake:");
+            android.widget.Button btnTap = new android.widget.Button(context);
+            btnTap.setText("Tap to Wake ⚡");
+            btnTap.setBackgroundColor(Color.parseColor("#35248A"));
+            btnTap.setTextColor(Color.WHITE);
+            btnTap.setOnClickListener(v -> recordShake());
+            content.addView(btnTap);
+        }
+
         card.addView(content);
         root.addView(card);
 
         return root;
+    }
+
+    private void recordShake() {
+        currentShakes++;
+        currentProgress = currentShakes;
+
+        if (tvCount != null) {
+            tvCount.setText(currentShakes + " / " + requiredShakes);
+        }
+        if (progressBar != null) {
+            progressBar.setProgress(currentShakes);
+        }
+        if (callback != null) {
+            callback.onProgressUpdated(currentShakes, requiredShakes);
+        }
+
+        if (currentShakes >= requiredShakes) {
+            cleanup();
+            if (callback != null) {
+                callback.onChallengeSolved();
+            }
+        }
     }
 
     @Override
@@ -162,25 +194,7 @@ public class ShakeChallenge extends Challenge implements SensorEventListener {
             float speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
 
             if (speed > SHAKE_THRESHOLD) {
-                currentShakes++;
-                currentProgress = currentShakes;
-
-                if (tvCount != null) {
-                    tvCount.setText(currentShakes + " / " + requiredShakes);
-                }
-                if (progressBar != null) {
-                    progressBar.setProgress(currentShakes);
-                }
-                if (callback != null) {
-                    callback.onProgressUpdated(currentShakes, requiredShakes);
-                }
-
-                if (currentShakes >= requiredShakes) {
-                    cleanup();
-                    if (callback != null) {
-                        callback.onChallengeSolved();
-                    }
-                }
+                recordShake();
             }
 
             lastX = x;
