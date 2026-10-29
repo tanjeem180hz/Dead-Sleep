@@ -93,6 +93,7 @@ public class AlarmRingingActivity extends AppCompatActivity {
             final int snoozeDuration = schedule != null ? schedule.getSnoozeDurationMinutes() : Constants.DEFAULT_SNOOZE_DURATION_MINUTES;
 
             runOnUiThread(() -> {
+                if (isFinishing() || isDestroyed() || binding == null) return;
                 int currentSnoozes = DeadSleepAlarmManager.getInstance(this).getCurrentSnoozeCount();
                 int remaining = Math.max(0, maxSnoozes - currentSnoozes);
 
@@ -131,6 +132,7 @@ public class AlarmRingingActivity extends AppCompatActivity {
         timeRunnable = new Runnable() {
             @Override
             public void run() {
+                if (isFinishing() || isDestroyed() || binding == null) return;
                 SimpleDateFormat sdf = new SimpleDateFormat("hh:mm", Locale.getDefault());
                 binding.tvAlarmRingingClock.setText(sdf.format(new Date()));
                 timeHandler.postDelayed(this, 1000);
@@ -144,5 +146,11 @@ public class AlarmRingingActivity extends AppCompatActivity {
             timeHandler.removeCallbacks(timeRunnable);
             timeRunnable = null;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopTimeTicker();
     }
 }
