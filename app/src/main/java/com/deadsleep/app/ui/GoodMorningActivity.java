@@ -35,14 +35,17 @@ public class GoodMorningActivity extends AppCompatActivity {
 
         // Fetch duration of last completed session
         com.deadsleep.app.data.AppDatabase.getExecutor().execute(() -> {
-            List<SleepSession> sessions = DeadSleepRepository.getInstance(this).getRecentSessionsSync(1);
-            if (!sessions.isEmpty()) {
-                SleepSession last = sessions.get(0);
-                int durationMin = last.getActualDurationMinutes();
-                runOnUiThread(() -> {
-                    binding.tvGmDuration.setText(TimeUtils.formatDuration(durationMin > 0 ? durationMin : 480));
-                });
-            }
+            try {
+                List<SleepSession> sessions = DeadSleepRepository.getInstance(this).getRecentSessionsSync(1);
+                if (!sessions.isEmpty()) {
+                    SleepSession last = sessions.get(0);
+                    int durationMin = last.getActualDurationMinutes();
+                    runOnUiThread(() -> {
+                        if (isFinishing() || isDestroyed() || binding == null) return;
+                        binding.tvGmDuration.setText(TimeUtils.formatDuration(durationMin > 0 ? durationMin : 480));
+                    });
+                }
+            } catch (Exception ignored) {}
         });
 
         binding.btnStartDay.setOnClickListener(v -> {

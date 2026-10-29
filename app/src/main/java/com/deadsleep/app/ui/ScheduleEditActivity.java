@@ -240,8 +240,11 @@ public class ScheduleEditActivity extends AppCompatActivity {
         currentSchedule.setGradualVolume(binding.cbGradualVolume.isChecked());
         currentSchedule.setAutoEscalateChallenge(binding.cbAutoEscalate.isChecked());
 
-        currentSchedule.setChallengeType(binding.spinnerChallengeType.getSelectedItem().toString());
-        currentSchedule.setChallengeDifficulty(binding.spinnerDifficulty.getSelectedItem().toString());
+        Object selChallenge = binding.spinnerChallengeType.getSelectedItem();
+        currentSchedule.setChallengeType(selChallenge != null ? selChallenge.toString() : Constants.CHALLENGE_RANDOM);
+
+        Object selDiff = binding.spinnerDifficulty.getSelectedItem();
+        currentSchedule.setChallengeDifficulty(selDiff != null ? selDiff.toString() : Constants.DIFFICULTY_MEDIUM);
 
         if (scheduleId == -1) {
             repository.insertSchedule(currentSchedule, id -> {
