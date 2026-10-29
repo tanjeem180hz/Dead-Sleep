@@ -16,11 +16,13 @@ public class PackageChangeReceiver extends BroadcastReceiver {
         if (intent == null || intent.getData() == null) return;
         String action = intent.getAction();
 
-        if (Intent.ACTION_PACKAGE_ADDED.equals(action)
-                || Intent.ACTION_PACKAGE_REMOVED.equals(action)
-                || Intent.ACTION_PACKAGE_FULLY_REMOVED.equals(action)) {
-            // Re-sync apps
-            RestrictionManager.getInstance(context).scanAndSeedInstalledApps();
-        }
+        try {
+            if (Intent.ACTION_PACKAGE_ADDED.equals(action)
+                    || Intent.ACTION_PACKAGE_REMOVED.equals(action)
+                    || Intent.ACTION_PACKAGE_FULLY_REMOVED.equals(action)) {
+                // Re-sync apps
+                RestrictionManager.getInstance(context).scanAndSeedInstalledApps();
+            }
+        } catch (Exception ignored) {}
     }
 }

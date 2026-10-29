@@ -13,6 +13,8 @@ public class SleepEndReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        SleepModeManager.getInstance(context).endSleepMode(true, 0);
+        try {
+            SleepModeManager.getInstance(context).endSleepMode(true, 0);
+        } catch (Exception ignored) {}
     }
 }
