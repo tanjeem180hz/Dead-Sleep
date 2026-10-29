@@ -14,10 +14,12 @@ public class SleepStartReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        long scheduleId = -1;
-        if (intent != null) {
-            scheduleId = intent.getLongExtra(Constants.EXTRA_SCHEDULE_ID, -1);
-        }
-        SleepModeManager.getInstance(context).startSleepMode(scheduleId);
+        try {
+            long scheduleId = -1;
+            if (intent != null) {
+                scheduleId = intent.getLongExtra(Constants.EXTRA_SCHEDULE_ID, -1);
+            }
+            SleepModeManager.getInstance(context).startSleepMode(scheduleId);
+        } catch (Exception ignored) {}
     }
 }
