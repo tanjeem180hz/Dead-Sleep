@@ -65,9 +65,13 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.AppViewHolder> {
         }
 
         try {
-            Drawable icon = packageManager.getApplicationIcon(app.getPackageName());
-            holder.ivIcon.setImageDrawable(icon);
-        } catch (PackageManager.NameNotFoundException e) {
+            if (packageManager != null) {
+                Drawable icon = packageManager.getApplicationIcon(app.getPackageName());
+                holder.ivIcon.setImageDrawable(icon);
+            } else {
+                holder.ivIcon.setImageResource(R.drawable.ic_launcher_foreground);
+            }
+        } catch (Exception e) {
             holder.ivIcon.setImageResource(R.drawable.ic_launcher_foreground);
         }
 
