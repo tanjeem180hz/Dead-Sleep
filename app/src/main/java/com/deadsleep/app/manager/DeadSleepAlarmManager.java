@@ -60,10 +60,20 @@ public class DeadSleepAlarmManager {
         serviceIntent.putExtra(Constants.EXTRA_SCHEDULE_ID, scheduleId);
         serviceIntent.putExtra(Constants.EXTRA_SCHEDULE_NAME, scheduleLabel);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(serviceIntent);
-        } else {
-            context.startService(serviceIntent);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(serviceIntent);
+            } else {
+                context.startService(serviceIntent);
+            }
+        } catch (Exception e) {
+            try {
+                Intent ringActivity = new Intent(context, com.deadsleep.app.ui.AlarmRingingActivity.class);
+                ringActivity.putExtra(Constants.EXTRA_SCHEDULE_ID, scheduleId);
+                ringActivity.putExtra(Constants.EXTRA_SCHEDULE_NAME, scheduleLabel);
+                ringActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(ringActivity);
+            } catch (Exception ignored) {}
         }
     }
 
