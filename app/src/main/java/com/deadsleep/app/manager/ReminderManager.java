@@ -55,10 +55,12 @@ public class ReminderManager {
 
         int notifId = isFinal ? Constants.NOTIF_ID_NUDGE_FINAL : Constants.NOTIF_ID_NUDGE;
         if (notificationManager != null) {
-            notificationManager.notify(
-                    notifId,
-                    NotificationHelper.buildNudgeNotification(context, title, body, leadMinutes)
-            );
+            try {
+                notificationManager.notify(
+                        notifId,
+                        NotificationHelper.buildNudgeNotification(context, title, body, leadMinutes)
+                );
+            } catch (Exception ignored) {}
         }
     }
 
@@ -81,10 +83,14 @@ public class ReminderManager {
         );
 
         if (alarmManager != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pi);
-            } else {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAt, pi);
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pi);
+                } else {
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAt, pi);
+                }
+            } catch (Exception e) {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAt, pi);
             }
         }
     }
