@@ -152,14 +152,18 @@ public class ScheduleManager {
         );
 
         if (alarmManager != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Intent showIntent = new Intent(context, MainActivity.class);
-                PendingIntent showPI = PendingIntent.getActivity(
-                        context, 0, showIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-                );
-                AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(triggerAtMillis, showPI);
-                alarmManager.setAlarmClock(info, pi);
-            } else {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Intent showIntent = new Intent(context, MainActivity.class);
+                    PendingIntent showPI = PendingIntent.getActivity(
+                            context, 0, showIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                    );
+                    AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(triggerAtMillis, showPI);
+                    alarmManager.setAlarmClock(info, pi);
+                } else {
+                    setExactAlarm(triggerAtMillis, pi);
+                }
+            } catch (Exception e) {
                 setExactAlarm(triggerAtMillis, pi);
             }
         }

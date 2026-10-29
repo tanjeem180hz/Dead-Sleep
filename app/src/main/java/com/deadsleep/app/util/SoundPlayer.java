@@ -49,6 +49,7 @@ public class SoundPlayer {
         try {
             if (ringtoneUriString != null && !ringtoneUriString.isEmpty() && !ringtoneUriString.startsWith("bundled:")) {
                 mediaPlayer.setDataSource(context, Uri.parse(ringtoneUriString));
+                mediaPlayer.prepare();
             } else {
                 int rawResId = getRawResourceForId(ringtoneUriString);
                 mediaPlayer = MediaPlayer.create(context, rawResId, audioAttributes, audioManager.generateAudioSessionId());
