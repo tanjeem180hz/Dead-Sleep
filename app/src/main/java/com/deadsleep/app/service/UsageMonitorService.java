@@ -49,32 +49,35 @@ public class UsageMonitorService extends Service {
 
     private void checkForegroundApp() {
         if (usageStatsManager == null) return;
-        long time = System.currentTimeMillis();
-        UsageEvents usageEvents = usageStatsManager.queryEvents(time - 3000, time);
-        UsageEvents.Event event = new UsageEvents.Event();
+        try {
+            long time = System.currentTimeMillis();
+            UsageEvents usageEvents = usageStatsManager.queryEvents(time - 3000, time);
+            if (usageEvents == null) return;
+            UsageEvents.Event event = new UsageEvents.Event();
 
-        String currentApp = null;
-        while (usageEvents.hasNextEvent()) {
-            usageEvents.getNextEvent(event);
-            if (event.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED) {
-                currentApp = event.getPackageName();
+            String currentApp = null;
+            while (usageEvents.hasNextEvent()) {
+                usageEvents.getNextEvent(event);
+                if (event.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED) {
+                    currentApp = event.getPackageName();
+                }
             }
-        }
 
-        if (currentApp != null && !currentApp.equals(lastForeground)) {
-            lastForeground = currentApp;
-            if (restrictionManager.isPackageRestricted(currentApp)) {
-                Intent lockIntent = new Intent(this, LockOverlayActivity.class);
-                lockIntent.putExtra(Constants.EXTRA_BLOCKED_PACKAGE, currentApp);
-                lockIntent.addFlags(
-                        Intent.FLAG_ACTIVITY_NEW_TASK |
-                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                        Intent.FLAG_ACTIVITY_SINGLE_TOP |
-                        Intent.FLAG_ACTIVITY_NO_ANIMATION
-                );
-                startActivity(lockIntent);
+            if (currentApp != null && !currentApp.equals(lastForeground)) {
+                lastForeground = currentApp;
+                if (restrictionManager.isPackageRestricted(currentApp)) {
+                    Intent lockIntent = new Intent(this, LockOverlayActivity.class);
+                    lockIntent.putExtra(Constants.EXTRA_BLOCKED_PACKAGE, currentApp);
+                    lockIntent.addFlags(
+                            Intent.FLAG_ACTIVITY_NEW_TASK |
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_SINGLE_TOP |
+                            Intent.FLAG_ACTIVITY_NO_ANIMATION
+                    );
+                    startActivity(lockIntent);
+                }
             }
-        }
+        } catch (Exception ignored) {}
     }
 
     @Override

@@ -79,15 +79,17 @@ public class AppLockAccessibilityService extends AccessibilityService {
             });
 
             // Immediately launch full-screen "Blocked by Dead Sleep" overlay
-            Intent lockIntent = new Intent(this, LockOverlayActivity.class);
-            lockIntent.putExtra(Constants.EXTRA_BLOCKED_PACKAGE, currentPackage);
-            lockIntent.addFlags(
-                    Intent.FLAG_ACTIVITY_NEW_TASK |
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                    Intent.FLAG_ACTIVITY_SINGLE_TOP |
-                    Intent.FLAG_ACTIVITY_NO_ANIMATION
-            );
-            startActivity(lockIntent);
+            try {
+                Intent lockIntent = new Intent(this, LockOverlayActivity.class);
+                lockIntent.putExtra(Constants.EXTRA_BLOCKED_PACKAGE, currentPackage);
+                lockIntent.addFlags(
+                        Intent.FLAG_ACTIVITY_NEW_TASK |
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                        Intent.FLAG_ACTIVITY_SINGLE_TOP |
+                        Intent.FLAG_ACTIVITY_NO_ANIMATION
+                );
+                startActivity(lockIntent);
+            } catch (Exception ignored) {}
         }
     }
 
