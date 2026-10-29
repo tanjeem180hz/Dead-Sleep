@@ -63,18 +63,20 @@ public class AlarmForegroundService extends Service {
         final long targetId = scheduleId;
         final String label = scheduleName;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(
-                    Constants.NOTIF_ID_ALARM,
-                    NotificationHelper.buildAlarmNotification(this, targetId, label),
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
-            );
-        } else {
-            startForeground(
-                    Constants.NOTIF_ID_ALARM,
-                    NotificationHelper.buildAlarmNotification(this, targetId, label)
-            );
-        }
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(
+                        Constants.NOTIF_ID_ALARM,
+                        NotificationHelper.buildAlarmNotification(this, targetId, label),
+                        ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+                );
+            } else {
+                startForeground(
+                        Constants.NOTIF_ID_ALARM,
+                        NotificationHelper.buildAlarmNotification(this, targetId, label)
+                );
+            }
+        } catch (Exception ignored) {}
 
         AppDatabase.getExecutor().execute(() -> {
             SleepSchedule schedule = (targetId != -1) ? DeadSleepRepository.getInstance(this).getScheduleById(targetId) : null;
