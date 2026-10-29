@@ -75,11 +75,13 @@ public class SleepModeManager {
             serviceIntent.putExtra(Constants.EXTRA_SESSION_ID, sessionId);
             serviceIntent.putExtra(Constants.EXTRA_SCHEDULE_ID, scheduleId);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(serviceIntent);
-            } else {
-                context.startService(serviceIntent);
-            }
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(serviceIntent);
+                } else {
+                    context.startService(serviceIntent);
+                }
+            } catch (Exception ignored) {}
         });
     }
 
