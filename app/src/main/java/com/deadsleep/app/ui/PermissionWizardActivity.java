@@ -81,9 +81,14 @@ public class PermissionWizardActivity extends AppCompatActivity {
                         try {
                             startActivity(item.settingsIntent);
                         } catch (Exception e) {
-                            // Fallback to app details
-                            startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                    android.net.Uri.parse("package:" + getPackageName())));
+                            try {
+                                startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        android.net.Uri.parse("package:" + getPackageName())));
+                            } catch (Exception ex) {
+                                try {
+                                    startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
+                                } catch (Exception ignored) {}
+                            }
                         }
                     }
                 });
@@ -107,7 +112,13 @@ public class PermissionWizardActivity extends AppCompatActivity {
                     try {
                         startActivity(targetIntent);
                     } catch (Exception e) {
-                        startActivity(new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS));
+                        try {
+                            startActivity(new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS));
+                        } catch (Exception ex) {
+                            try {
+                                startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
+                            } catch (Exception ignored) {}
+                        }
                     }
                 })
                 .setNegativeButton("Cancel", null)
