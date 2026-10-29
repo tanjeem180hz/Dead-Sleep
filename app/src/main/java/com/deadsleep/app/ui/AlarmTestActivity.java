@@ -31,6 +31,7 @@ public class AlarmTestActivity extends AppCompatActivity {
         countdownRunnable = new Runnable() {
             @Override
             public void run() {
+                if (isFinishing() || isDestroyed() || binding == null) return;
                 secondsRemaining--;
                 if (secondsRemaining > 0) {
                     binding.tvTestCountdown.setText("Ringing in " + secondsRemaining + "s...");
