@@ -106,6 +106,7 @@ public class ChallengeActivity extends AppCompatActivity implements Challenge.Ch
         timerRunnable = new Runnable() {
             @Override
             public void run() {
+                if (isFinishing() || isDestroyed() || binding == null) return;
                 long elapsed = (System.currentTimeMillis() - startTimeMillis) / 1000;
                 long mins = elapsed / 60;
                 long secs = elapsed % 60;

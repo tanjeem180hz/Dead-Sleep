@@ -42,8 +42,13 @@ public class RoutineAdvisorActivity extends AppCompatActivity implements Routine
 
     private void loadSuggestions() {
         AppDatabase.getExecutor().execute(() -> {
-            List<RoutineSuggestion> list = advisor.generateRecommendations();
-            runOnUiThread(() -> adapter.setSuggestions(list));
+            try {
+                List<RoutineSuggestion> list = advisor.generateRecommendations();
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed() || binding == null) return;
+                    adapter.setSuggestions(list);
+                });
+            } catch (Exception ignored) {}
         });
     }
 
