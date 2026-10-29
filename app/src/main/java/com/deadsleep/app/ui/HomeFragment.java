@@ -86,7 +86,9 @@ public class HomeFragment extends Fragment {
         if (ctx == null || !isAdded() || binding == null) return;
 
         PreferencesManager prefs = PreferencesManager.getInstance(ctx);
-        binding.tvHomeGreeting.setText("Welcome, " + prefs.getUserName() + " 🌙");
+        String name = prefs.getUserName();
+        if (name == null || name.trim().isEmpty()) name = "Friend";
+        binding.tvHomeGreeting.setText("Welcome, " + name + " 🌙");
 
         // Permission health check
         boolean allGood = PermissionUtils.areAllCriticalPermissionsGranted(ctx);
