@@ -122,10 +122,12 @@ public class SleepModeActiveActivity extends AppCompatActivity {
                 .show();
     }
 
+    private long cachedWakeTimeMillis = -1;
+
     @Override
     protected void onResume() {
         super.onResume();
-        startCountdown();
+        loadWakeTimeAndStartCountdown();
     }
 
     @Override
@@ -134,13 +136,43 @@ public class SleepModeActiveActivity extends AppCompatActivity {
         stopCountdown();
     }
 
+    private void loadWakeTimeAndStartCountdown() {
+        com.deadsleep.app.data.AppDatabase.getExecutor().execute(() -> {
+            try {
+                com.deadsleep.app.model.SleepSession session = com.deadsleep.app.data.DeadSleepRepository.getInstance(this).getActiveSessionSync();
+                if (session != null && session.getTargetWakeTimeMillis() > 0) {
+                    cachedWakeTimeMillis = session.getTargetWakeTimeMillis();
+                } else {
+                    long schedId = com.deadsleep.app.data.PreferencesManager.getInstance(this).getCurrentScheduleId();
+                    com.deadsleep.app.model.SleepSchedule schedule = com.deadsleep.app.data.DeadSleepRepository.getInstance(this).getScheduleById(schedId);
+                    if (schedule != null) {
+                        cachedWakeTimeMillis = TimeUtils.getNextOccurrenceMillis(
+                                schedule.getWakeHour(), schedule.getWakeMinute(), schedule.getDaysOfWeek()
+                        );
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+
+            runOnUiThread(() -> {
+                if (isFinishing() || isDestroyed() || binding == null) return;
+                startCountdown();
+            });
+        });
+    }
+
     private void startCountdown() {
         stopCountdown();
         countdownRunnable = new Runnable() {
             @Override
             public void run() {
-                long remainingMillis = ScheduleManager.getInstance(SleepModeActiveActivity.this).getMillisUntilNextSleep();
-                binding.tvActiveCountdown.setText(TimeUtils.formatCountdown(remainingMillis));
+                if (isFinishing() || isDestroyed() || binding == null) return;
+                if (cachedWakeTimeMillis > 0) {
+                    long remaining = Math.max(0, cachedWakeTimeMillis - System.currentTimeMillis());
+                    binding.tvActiveCountdown.setText(TimeUtils.formatCountdown(remaining));
+                } else {
+                    binding.tvActiveCountdown.setText("00:00");
+                }
                 handler.postDelayed(this, 1000);
             }
         };
