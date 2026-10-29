@@ -26,16 +26,18 @@ public class BootReceiver extends BroadcastReceiver {
                 || Intent.ACTION_TIME_CHANGED.equals(action)) {
 
             AppDatabase.getExecutor().execute(() -> {
-                PreferencesManager prefs = PreferencesManager.getInstance(context);
+                try {
+                    PreferencesManager prefs = PreferencesManager.getInstance(context);
 
-                // If sleep mode was active when device shut down, restore active state immediately
-                if (prefs.isSleepModeActive()) {
-                    long activeScheduleId = prefs.getCurrentScheduleId();
-                    SleepModeManager.getInstance(context).startSleepMode(activeScheduleId);
-                }
+                    // If sleep mode was active when device shut down, restore active state immediately
+                    if (prefs.isSleepModeActive()) {
+                        long activeScheduleId = prefs.getCurrentScheduleId();
+                        SleepModeManager.getInstance(context).startSleepMode(activeScheduleId);
+                    }
 
-                // Reschedule all upcoming events
-                ScheduleManager.getInstance(context).rescheduleAll();
+                    // Reschedule all upcoming events
+                    ScheduleManager.getInstance(context).rescheduleAll();
+                } catch (Exception ignored) {}
             });
         }
     }

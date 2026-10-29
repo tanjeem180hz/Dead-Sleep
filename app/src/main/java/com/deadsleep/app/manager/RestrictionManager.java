@@ -104,25 +104,30 @@ public class RestrictionManager {
      */
     public void scanAndSeedInstalledApps() {
         AppDatabase.getExecutor().execute(() -> {
-            PackageManager pm = context.getPackageManager();
-            Intent intent = new Intent(Intent.ACTION_MAIN, null);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            List<ResolveInfo> activities = pm.queryIntentActivities(intent, 0);
+            try {
+                PackageManager pm = context.getPackageManager();
+                if (pm == null) return;
+                Intent intent = new Intent(Intent.ACTION_MAIN, null);
+                intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                List<ResolveInfo> activities = pm.queryIntentActivities(intent, 0);
+                if (activities == null) return;
 
-            List<RestrictedApp> appsToSave = new ArrayList<>();
-            for (ResolveInfo ri : activities) {
-                String pkg = ri.activityInfo.packageName;
-                if (pkg.equals(context.getPackageName())) continue;
+                List<RestrictedApp> appsToSave = new ArrayList<>();
+                for (ResolveInfo ri : activities) {
+                    if (ri == null || ri.activityInfo == null || ri.activityInfo.packageName == null) continue;
+                    String pkg = ri.activityInfo.packageName;
+                    if (pkg.equals(context.getPackageName())) continue;
 
-                String appName = ri.loadLabel(pm).toString();
-                String category = categorizeApp(pkg, ri.activityInfo.applicationInfo);
-                boolean isPreChecked = shouldPreCheckApp(pkg, category);
+                    String appName = ri.loadLabel(pm) != null ? ri.loadLabel(pm).toString() : pkg;
+                    String category = categorizeApp(pkg, ri.activityInfo.applicationInfo);
+                    boolean isPreChecked = shouldPreCheckApp(pkg, category);
 
-                RestrictedApp restrictedApp = new RestrictedApp(pkg, appName, category, isPreChecked);
-                appsToSave.add(restrictedApp);
-            }
+                    RestrictedApp restrictedApp = new RestrictedApp(pkg, appName, category, isPreChecked);
+                    appsToSave.add(restrictedApp);
+                }
 
-            repository.insertAllApps(appsToSave);
+                repository.insertAllApps(appsToSave);
+            } catch (Exception ignored) {}
         });
     }
 
