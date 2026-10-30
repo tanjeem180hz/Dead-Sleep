@@ -193,6 +193,7 @@ com.deadsleep.app/
 │       ├── SleepSessionDao.java
 │       └── WhitelistDao.java
 ├── manager/                    # Core business logic managers
+│   ├── BedtimeDisplayManager.java # System-wide daltonizer & hardware ColorMatrix grayscale
 │   ├── ChallengeManager.java   # Snooze auto-escalation & challenge preparation
 │   ├── DeadSleepAlarmManager.java # Audio focus, volume lock & alarm trigger
 │   ├── ReminderManager.java    # Bedtime lead nudges (15-60m) and 5m final alerts
@@ -201,7 +202,8 @@ com.deadsleep.app/
 │   ├── ScheduleManager.java    # Master scheduling via Android AlarmManager
 │   ├── SettingsManager.java    # CSV statistics export, JSON backup/restore
 │   ├── SleepModeManager.java   # Sleep mode activation, edit-lock & emergency exit
-│   └── StatsManager.java       # Consistency score (0-100) & streak tracking
+│   ├── StatsManager.java       # Consistency score (0-100) & streak tracking
+│   └── UpdateManager.java      # Git-driven auto-update & version check
 ├── model/                      # POJOs and Room database entities
 │   ├── AlarmConfig.java
 │   ├── BlockedAttempt.java
@@ -210,6 +212,7 @@ com.deadsleep.app/
 │   ├── RoutineSuggestion.java
 │   ├── SleepSchedule.java
 │   ├── SleepSession.java
+│   ├── UpdateInfo.java
 │   ├── UserProfile.java
 │   └── WhitelistEntry.java
 ├── receiver/                   # BroadcastReceivers for system events
@@ -231,8 +234,10 @@ com.deadsleep.app/
 │   ├── AlarmTestActivity.java
 │   ├── AppPickerActivity.java
 │   ├── AppsFragment.java
+│   ├── BedtimeActivity.java    # Bedtime routine & Black/White display settings
 │   ├── ChallengeActivity.java
 │   ├── ConsistencyGaugeView.java
+│   ├── ForceUpdateActivity.java # Mandatory lock screen for Git updates
 │   ├── GoodMorningActivity.java
 │   ├── HomeFragment.java
 │   ├── LockOverlayActivity.java
@@ -295,8 +300,20 @@ com.deadsleep.app/
 - **Final 5-Minute Warning:** Optional secondary countdown nudge.
 - **Reboot Resilience:** `BootReceiver` restores all pending nudges upon reboot, time change, or app update.
 
-### 4. App Restriction & Automated Sleep Mode
+### 4. Bedtime Mode & Black & White (Grayscale) Screen 🌙🖤🤍
+- **Automatic Timewise Activation:** Dead Sleep automatically transitions the phone into Bedtime Mode precisely when your scheduled bedtime arrives, without needing manual intervention.
+- **Cognitive Black & White Desaturation:** During Bedtime Mode, the phone display transforms into pure monochrome/grayscale:
+  - **Dopamine Elimination:** Removing vibrant app and social media colors eliminates psychological dopamine triggers that keep users awake scrolling late at night.
+  - **Blue-Light Eye Fatigue Reduction:** High-contrast saturated blue photons are subdued into calm, restful grays.
+  - **Dual-Layer Implementation:**
+    - **System-Wide Daltonizer Automation:** Automatically controls `Settings.Secure` display daltonizer mode (`0 = Monochromacy`) via `WRITE_SECURE_SETTINGS` (grantable once via ADB without root).
+    - **In-App Hardware ColorMatrix Filtering:** Both `SleepModeActiveActivity` and `LockOverlayActivity` employ a 0-saturation hardware `ColorMatrix` filter, ensuring a 100% black-and-white experience across all devices with zero permissions required.
+  - **Automatic Full-Color Restoration:** Vibrancy and full RGB color are automatically restored the moment you successfully solve the morning cognitive wake-up puzzle or use emergency unlock.
+  - **Dedicated Bedtime Control Panel:** Access via Home Card or Settings to test B&W mode instantly, open system Color Correction settings with 1 tap, and copy ADB permission commands with 1 click.
+
+### 5. App Restriction & Automated Sleep Mode
 - **Smart App Picker:** Installed launchable apps categorized into Social, Games, Video/Streaming, Browsers, and Other.
+- **Dual-Pass App Discovery:** Employs both `CATEGORY_LAUNCHER` and `ACTION_MAIN` package queries under `QUERY_ALL_PACKAGES` so every user and system application is visible on Android 11 to 15.
 - **One-Tap Category Selection:** Quickly lock all apps in a specific category.
 - **Real-Time Lockout:** `AppLockAccessibilityService` detects foreground app transitions. If restricted, it instantly redirects to the `LockOverlayActivity`.
 - **Blocked Attempt Logging:** Every blocked access attempt is logged to the Room database with timestamp and package name.
