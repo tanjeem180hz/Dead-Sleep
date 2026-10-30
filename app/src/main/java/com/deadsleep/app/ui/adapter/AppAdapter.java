@@ -82,7 +82,7 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.AppViewHolder> {
             if (listener != null) listener.onToggle(app, isChecked);
         });
 
-        holder.itemView.setOnClickListener(v -> holder.cbRestricted.performClick());
+        holder.itemView.setOnClickListener(v -> holder.cbRestricted.setChecked(!holder.cbRestricted.isChecked()));
     }
 
     @Override
