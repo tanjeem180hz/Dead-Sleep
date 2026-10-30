@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.deadsleep.app.R;
 import com.deadsleep.app.data.DeadSleepRepository;
 import com.deadsleep.app.databinding.FragmentAppsBinding;
+import com.deadsleep.app.manager.RestrictionManager;
 import com.deadsleep.app.model.RestrictedApp;
 import com.deadsleep.app.ui.adapter.AppAdapter;
 import com.deadsleep.app.util.Constants;
@@ -51,6 +53,9 @@ public class AppsFragment extends Fragment implements AppAdapter.OnAppToggleList
         binding.rvApps.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvApps.setAdapter(adapter);
 
+        // Immediate background scan of device applications
+        RestrictionManager.getInstance(requireContext()).scanAndSeedInstalledApps();
+
         repository.getAllAppsLiveData().observe(getViewLifecycleOwner(), apps -> {
             allAppsList = apps != null ? apps : new ArrayList<>();
             applyFilter();
@@ -77,28 +82,45 @@ public class AppsFragment extends Fragment implements AppAdapter.OnAppToggleList
             else if (id == R.id.chipCatGames) currentCategory = Constants.CATEGORY_GAMES;
             else if (id == R.id.chipCatVideo) currentCategory = Constants.CATEGORY_VIDEO;
             else if (id == R.id.chipCatBrowsers) currentCategory = Constants.CATEGORY_BROWSERS;
+            else if (id == R.id.chipCatOther) currentCategory = Constants.CATEGORY_OTHER;
             else currentCategory = "All";
             applyFilter();
         });
 
         binding.btnSelectAllCategory.setOnClickListener(v -> {
+            List<RestrictedApp> filtered = getFilteredApps();
+            if (filtered.isEmpty()) return;
+
             boolean shouldSelect = true;
-            for (RestrictedApp app : getFilteredApps()) {
+            for (RestrictedApp app : filtered) {
                 if (app.isRestricted()) {
                     shouldSelect = false;
                     break;
                 }
             }
-            for (RestrictedApp app : getFilteredApps()) {
+            for (RestrictedApp app : filtered) {
                 app.setRestricted(shouldSelect);
                 repository.insertOrUpdateApp(app);
             }
             applyFilter();
         });
 
+        binding.btnRescanApps.setOnClickListener(v -> {
+            Toast.makeText(requireContext(), "Scanning device for installed apps...", Toast.LENGTH_SHORT).show();
+            RestrictionManager.getInstance(requireContext()).scanAndSeedInstalledApps();
+        });
+
         binding.btnWhitelist.setOnClickListener(v -> {
             startActivity(new Intent(requireContext(), WhitelistActivity.class));
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getContext() != null) {
+            RestrictionManager.getInstance(requireContext()).scanAndSeedInstalledApps();
+        }
     }
 
     private List<RestrictedApp> getFilteredApps() {
@@ -117,14 +139,35 @@ public class AppsFragment extends Fragment implements AppAdapter.OnAppToggleList
     }
 
     private void applyFilter() {
+        if (binding == null) return;
         List<RestrictedApp> filtered = getFilteredApps();
         adapter.setApps(filtered);
+
+        if (filtered.isEmpty()) {
+            binding.rvApps.setVisibility(View.GONE);
+            binding.tvEmptyApps.setVisibility(View.VISIBLE);
+            if (!currentQuery.isEmpty()) {
+                binding.tvEmptyApps.setText("No apps found matching \"" + currentQuery + "\"");
+            } else if (!"All".equals(currentCategory)) {
+                binding.tvEmptyApps.setText("No apps found in " + currentCategory + " category.");
+            } else {
+                binding.tvEmptyApps.setText("Scanning installed apps on device...");
+            }
+        } else {
+            binding.rvApps.setVisibility(View.VISIBLE);
+            binding.tvEmptyApps.setVisibility(View.GONE);
+        }
 
         int restrictedCount = 0;
         for (RestrictedApp a : allAppsList) {
             if (a.isRestricted()) restrictedCount++;
         }
-        binding.tvSelectedCount.setText(restrictedCount + " Apps Restricted");
+
+        if (allAppsList.isEmpty()) {
+            binding.tvSelectedCount.setText("Detecting installed apps...");
+        } else {
+            binding.tvSelectedCount.setText(restrictedCount + " of " + allAppsList.size() + " Apps Restricted");
+        }
     }
 
     @Override
