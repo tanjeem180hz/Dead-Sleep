@@ -136,6 +136,9 @@ public class SleepModeManager {
     public void emergencyUnlock() {
         preferencesManager.setSleepModeActive(false);
 
+        // Restore normal full-color display on emergency exit
+        BedtimeDisplayManager.disableGrayscale(context);
+
         AppDatabase.getExecutor().execute(() -> {
             SleepSession session = repository.getActiveSessionSync();
             if (session != null) {

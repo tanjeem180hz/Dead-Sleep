@@ -40,6 +40,10 @@ public class SleepModeActiveActivity extends AppCompatActivity {
         binding = ActivitySleepModeActiveBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        if (com.deadsleep.app.data.PreferencesManager.getInstance(this).isBedtimeGrayscaleEnabled()) {
+            com.deadsleep.app.manager.BedtimeDisplayManager.applyGrayscaleToView(binding.getRoot());
+        }
+
         setupEmergencyHold();
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
