@@ -21,20 +21,25 @@ import com.deadsleep.app.manager.ScheduleManager;
 import com.deadsleep.app.manager.SleepModeManager;
 import com.deadsleep.app.manager.StatsManager;
 import com.deadsleep.app.model.SleepSchedule;
+import com.deadsleep.app.model.SleepSession;
 import com.deadsleep.app.util.PermissionUtils;
 import com.deadsleep.app.util.TimeUtils;
 
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
- * Dashboard screen with next sleep countdown, manual sleep mode toggle, streak, and health alerts.
+ * Dashboard screen with real-time live device clock, next sleep countdown, manual sleep mode toggle, streak, and health alerts.
  */
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
-    private final Handler countdownHandler = new Handler(Looper.getMainLooper());
-    private Runnable countdownRunnable;
-    private long cachedNextSleepTime = -1;
+    private final Handler tickerHandler = new Handler(Looper.getMainLooper());
+    private Runnable tickerRunnable;
+
+    private long cachedTargetTime = -1;
+    private boolean isSleepActive = false;
 
     @Nullable
     @Override
@@ -50,9 +55,13 @@ public class HomeFragment extends Fragment {
         binding.btnStartSleepNow.setOnClickListener(v -> {
             Context ctx = getContext();
             if (ctx == null) return;
-            long scheduleId = PreferencesManager.getInstance(ctx).getCurrentScheduleId();
-            SleepModeManager.getInstance(ctx).startSleepMode(scheduleId);
-            startActivity(new Intent(ctx, SleepModeActiveActivity.class));
+            if (SleepModeManager.getInstance(ctx).isSleepModeActive()) {
+                startActivity(new Intent(ctx, SleepModeActiveActivity.class));
+            } else {
+                long scheduleId = PreferencesManager.getInstance(ctx).getCurrentScheduleId();
+                SleepModeManager.getInstance(ctx).startSleepMode(scheduleId);
+                startActivity(new Intent(ctx, SleepModeActiveActivity.class));
+            }
         });
 
         binding.btnFixPermissions.setOnClickListener(v -> {
@@ -72,13 +81,13 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         updateUI();
-        startCountdown();
+        startTicker();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        stopCountdown();
+        stopTicker();
     }
 
     private void updateUI() {
@@ -103,70 +112,127 @@ public class HomeFragment extends Fragment {
             binding.tvStreakSubtitle.setText("Solve wake-up challenge to start a streak");
         }
 
-        // Active schedule details & Next sleep calculation on background thread
+        isSleepActive = SleepModeManager.getInstance(ctx).isSleepModeActive();
+        if (isSleepActive) {
+            binding.tvCountdownTitle.setText("SLEEP MODE ACTIVE 🌙");
+            binding.btnStartSleepNow.setText("🌙 View Sleep Dashboard");
+        } else {
+            binding.tvCountdownTitle.setText("NEXT SLEEP MODE STARTS IN");
+            binding.btnStartSleepNow.setText("🌙 Start Sleep Mode Now");
+        }
+
+        // Active schedule details & Next sleep/wake calculation on background thread
         AppDatabase.getExecutor().execute(() -> {
             try {
                 Context bgCtx = getContext();
                 if (bgCtx == null) return;
-                List<SleepSchedule> enabled = DeadSleepRepository.getInstance(bgCtx).getEnabledSchedulesSync();
-                long remainingMillis = ScheduleManager.getInstance(bgCtx).getMillisUntilNextSleep();
-                cachedNextSleepTime = remainingMillis > 0 ? (System.currentTimeMillis() + remainingMillis) : -1;
 
-                if (isAdded() && getActivity() != null) {
-                    getActivity().runOnUiThread(() -> {
-                        if (binding == null) return;
-                        if (enabled == null || enabled.isEmpty()) {
-                            binding.tvNextScheduleDetail.setText("No active schedules. Tap Schedules tab to add one.");
-                        } else {
-                            SleepSchedule s = enabled.get(0);
-                            binding.tvNextScheduleDetail.setText(s.getName() + ": " + s.getFormattedSleepTime() + " → " + s.getFormattedWakeTime());
+                if (isSleepActive) {
+                    SleepSession session = DeadSleepRepository.getInstance(bgCtx).getActiveSessionSync();
+                    long targetWake = (session != null && session.getTargetWakeTimeMillis() > System.currentTimeMillis())
+                            ? session.getTargetWakeTimeMillis() : -1;
+                    if (targetWake <= 0) {
+                        SleepSchedule nextSched = ScheduleManager.getInstance(bgCtx).getNextActiveSchedule();
+                        if (nextSched != null) {
+                            targetWake = TimeUtils.getTargetWakeTimeMillis(
+                                    System.currentTimeMillis(), nextSched.getWakeHour(), nextSched.getWakeMinute()
+                            );
                         }
-                        updateCountdownText();
-                    });
+                    }
+                    cachedTargetTime = targetWake;
+                    final long finalTargetWake = targetWake;
+
+                    if (isAdded() && getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            if (binding == null) return;
+                            if (finalTargetWake > 0) {
+                                java.util.Calendar cal = java.util.Calendar.getInstance();
+                                cal.setTimeInMillis(finalTargetWake);
+                                String wakeStr = TimeUtils.formatTime(bgCtx, cal.get(java.util.Calendar.HOUR_OF_DAY), cal.get(java.util.Calendar.MINUTE));
+                                binding.tvNextScheduleDetail.setText("Wake-up Alarm at " + wakeStr);
+                            } else {
+                                binding.tvNextScheduleDetail.setText("Rest well! Alarm will sound in the morning.");
+                            }
+                            updateTickerDisplay();
+                        });
+                    }
+                } else {
+                    SleepSchedule nextSched = ScheduleManager.getInstance(bgCtx).getNextActiveSchedule();
+                    long remainingMillis = ScheduleManager.getInstance(bgCtx).getMillisUntilNextSleep();
+                    cachedTargetTime = remainingMillis > 0 ? (System.currentTimeMillis() + remainingMillis) : -1;
+
+                    if (isAdded() && getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            if (binding == null) return;
+                            if (nextSched == null) {
+                                binding.tvNextScheduleDetail.setText("No active schedules. Tap Schedules tab to add one.");
+                            } else {
+                                binding.tvNextScheduleDetail.setText(nextSched.getName() + ": "
+                                        + nextSched.getFormattedSleepTime(bgCtx) + " → "
+                                        + nextSched.getFormattedWakeTime(bgCtx));
+                            }
+                            updateTickerDisplay();
+                        });
+                    }
                 }
             } catch (Exception ignored) {
             }
         });
     }
 
-    private void startCountdown() {
-        stopCountdown();
-        countdownRunnable = new Runnable() {
+    private void startTicker() {
+        stopTicker();
+        tickerRunnable = new Runnable() {
             @Override
             public void run() {
                 if (!isAdded() || binding == null) return;
-                updateCountdownText();
-                countdownHandler.postDelayed(this, 1000);
+                updateTickerDisplay();
+                tickerHandler.postDelayed(this, 1000);
             }
         };
-        countdownHandler.post(countdownRunnable);
+        tickerHandler.post(tickerRunnable);
     }
 
-    private void updateCountdownText() {
+    private void updateTickerDisplay() {
         if (binding == null) return;
-        if (cachedNextSleepTime <= 0) {
-            binding.tvCountdownTimer.setText("00:00");
+        Context ctx = getContext();
+        if (ctx == null) return;
+
+        // 1. Update Live Device Clock
+        Date now = new Date();
+        boolean is24 = android.text.format.DateFormat.is24HourFormat(ctx);
+        SimpleDateFormat timeSdf = is24
+                ? new SimpleDateFormat("HH:mm:ss", Locale.US)
+                : new SimpleDateFormat("h:mm:ss a", Locale.US);
+        SimpleDateFormat dateSdf = new SimpleDateFormat("EEEE, MMMM d, yyyy", Locale.US);
+
+        binding.tvLiveClockTime.setText(timeSdf.format(now));
+        binding.tvLiveClockDate.setText(dateSdf.format(now));
+
+        // 2. Update Countdown Timer with explicit duration units (e.g. 05h 22m 15s)
+        if (cachedTargetTime <= 0) {
+            binding.tvCountdownTimer.setText("00m 00s");
         } else {
-            long remaining = cachedNextSleepTime - System.currentTimeMillis();
+            long remaining = cachedTargetTime - System.currentTimeMillis();
             if (remaining <= 0) {
-                binding.tvCountdownTimer.setText("00:00");
+                binding.tvCountdownTimer.setText("00m 00s");
             } else {
-                binding.tvCountdownTimer.setText(TimeUtils.formatCountdown(remaining));
+                binding.tvCountdownTimer.setText(TimeUtils.formatCountdownVerbose(remaining));
             }
         }
     }
 
-    private void stopCountdown() {
-        if (countdownRunnable != null) {
-            countdownHandler.removeCallbacks(countdownRunnable);
-            countdownRunnable = null;
+    private void stopTicker() {
+        if (tickerRunnable != null) {
+            tickerHandler.removeCallbacks(tickerRunnable);
+            tickerRunnable = null;
         }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        stopCountdown();
+        stopTicker();
         binding = null;
     }
 }
