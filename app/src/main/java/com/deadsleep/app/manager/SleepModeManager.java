@@ -87,6 +87,11 @@ public class SleepModeManager {
                     context.startService(serviceIntent);
                 }
             } catch (Exception ignored) {}
+
+            // Activate Bedtime Mode Display Desaturation (Black & White Grayscale)
+            if (preferencesManager.isBedtimeGrayscaleEnabled()) {
+                BedtimeDisplayManager.enableGrayscale(context);
+            }
         });
     }
 
@@ -95,6 +100,9 @@ public class SleepModeManager {
      */
     public void endSleepMode(boolean challengeSolved, int challengeTimeSec) {
         preferencesManager.setSleepModeActive(false);
+
+        // Restore normal full-color display
+        BedtimeDisplayManager.disableGrayscale(context);
 
         AppDatabase.getExecutor().execute(() -> {
             long sessionId = preferencesManager.getActiveSessionId();
