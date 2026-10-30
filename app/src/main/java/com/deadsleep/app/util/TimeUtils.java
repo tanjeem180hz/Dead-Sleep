@@ -98,6 +98,44 @@ public final class TimeUtils {
     }
 
     /**
+     * Formats countdown into explicit units so it cannot be mistaken for a clock time:
+     * e.g. "05h 22m 15s", "45m 10s", or "15s".
+     */
+    public static String formatCountdownVerbose(long millisRemaining) {
+        if (millisRemaining <= 0) return "00m 00s";
+        long totalSeconds = millisRemaining / 1000;
+        long hours = totalSeconds / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
+
+        if (hours > 0) {
+            return String.format(Locale.US, "%02dh %02dm %02ds", hours, minutes, seconds);
+        } else if (minutes > 0) {
+            return String.format(Locale.US, "%02dm %02ds", minutes, seconds);
+        } else {
+            return String.format(Locale.US, "%02ds", seconds);
+        }
+    }
+
+    /**
+     * Computes the exact timestamp in millis for a wake-up time given a sleep start timestamp,
+     * correctly handling midnight crossing without depending on weekly repeat days.
+     */
+    public static long getTargetWakeTimeMillis(long sleepTimeMillis, int wakeHour, int wakeMinute) {
+        Calendar wakeCal = Calendar.getInstance();
+        wakeCal.setTimeInMillis(sleepTimeMillis);
+        wakeCal.set(Calendar.HOUR_OF_DAY, wakeHour);
+        wakeCal.set(Calendar.MINUTE, wakeMinute);
+        wakeCal.set(Calendar.SECOND, 0);
+        wakeCal.set(Calendar.MILLISECOND, 0);
+
+        if (wakeCal.getTimeInMillis() <= sleepTimeMillis) {
+            wakeCal.add(Calendar.DAY_OF_YEAR, 1);
+        }
+        return wakeCal.getTimeInMillis();
+    }
+
+    /**
      * Formats days bitmask into a short human-readable string (e.g. "Mon, Tue, Wed", "Everyday", "Weekdays").
      */
     public static String formatDays(int daysBitmask) {

@@ -123,8 +123,16 @@ public class SleepSchedule {
         return TimeUtils.formatTime(sleepHour, sleepMinute);
     }
 
+    public String getFormattedSleepTime(android.content.Context context) {
+        return TimeUtils.formatTime(context, sleepHour, sleepMinute);
+    }
+
     public String getFormattedWakeTime() {
         return TimeUtils.formatTime(wakeHour, wakeMinute);
+    }
+
+    public String getFormattedWakeTime(android.content.Context context) {
+        return TimeUtils.formatTime(context, wakeHour, wakeMinute);
     }
 
     public int getDurationMinutes() {
