@@ -19,28 +19,10 @@ public class UpdateInfo implements Serializable {
     public UpdateInfo() {}
 
     public static UpdateInfo fromJson(String jsonStr) {
-        if (jsonStr == null || jsonStr.trim().isEmpty() || !jsonStr.contains("{") || !jsonStr.contains("}")) {
+        if (jsonStr == null || !jsonStr.contains("{") || !jsonStr.contains("}")) {
             return null;
         }
         try {
-            // First attempt with org.json.JSONObject (available on actual Android runtime)
-            try {
-                JSONObject json = new JSONObject(jsonStr);
-                int code = json.optInt("versionCode", -1);
-                if (code != -1) {
-                    UpdateInfo info = new UpdateInfo();
-                    info.versionCode = code;
-                    info.versionName = json.optString("versionName", "1.0.0");
-                    info.apkUrl = json.optString("apkUrl", "https://github.com/tanjeem180hz/Dead-Sleep/raw/main/release/DeadSleep-v1.0.0.apk");
-                    info.forceUpdate = json.optBoolean("forceUpdate", true);
-                    info.title = json.optString("title", "Update Available");
-                    info.releaseNotes = json.optString("releaseNotes", "New improvements and bug fixes.");
-                    info.minSupportedVersionCode = json.optInt("minSupportedVersionCode", 1);
-                    return info;
-                }
-            } catch (Throwable ignored) {}
-
-            // JVM unit test fallback (when android.jar stub returns default values)
             int code = extractInt(jsonStr, "versionCode", -1);
             if (code <= 0) return null;
 
