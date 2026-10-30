@@ -41,6 +41,8 @@ public class PermissionWizardActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(btnContinue);
     }
 
     @Override
@@ -73,6 +75,7 @@ public class PermissionWizardActivity extends AppCompatActivity {
                 btnAction.setEnabled(true);
                 btnAction.setTextColor(Color.WHITE);
                 btnAction.setBackgroundColor(Color.parseColor("#35248A"));
+                com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(btnAction);
 
                 btnAction.setOnClickListener(v -> {
                     if ("accessibility".equals(item.id)) {
