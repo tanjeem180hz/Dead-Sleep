@@ -44,6 +44,8 @@ public class SleepModeActiveActivity extends AppCompatActivity {
             com.deadsleep.app.manager.BedtimeDisplayManager.applyGrayscaleToView(binding.getRoot());
         }
 
+        com.deadsleep.app.util.AnimationHelper.startPulseBreathing(binding.ivSleepModeMoon);
+
         setupEmergencyHold();
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
