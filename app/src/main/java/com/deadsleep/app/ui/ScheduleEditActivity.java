@@ -161,22 +161,24 @@ public class ScheduleEditActivity extends AppCompatActivity {
         binding.btnBack.setOnClickListener(v -> finish());
 
         binding.cardSleepTime.setOnClickListener(v -> {
+            boolean is24 = android.text.format.DateFormat.is24HourFormat(this);
             TimePickerDialog dialog = new TimePickerDialog(this, (view, hourOfDay, minute) -> {
                 sleepHour = hourOfDay;
                 sleepMinute = minute;
-                binding.tvSleepTime.setText(TimeUtils.formatTime(sleepHour, sleepMinute));
+                binding.tvSleepTime.setText(TimeUtils.formatTime(this, sleepHour, sleepMinute));
                 updateDurationWarning();
-            }, sleepHour, sleepMinute, false);
+            }, sleepHour, sleepMinute, is24);
             dialog.show();
         });
 
         binding.cardWakeTime.setOnClickListener(v -> {
+            boolean is24 = android.text.format.DateFormat.is24HourFormat(this);
             TimePickerDialog dialog = new TimePickerDialog(this, (view, hourOfDay, minute) -> {
                 wakeHour = hourOfDay;
                 wakeMinute = minute;
-                binding.tvWakeTime.setText(TimeUtils.formatTime(wakeHour, wakeMinute));
+                binding.tvWakeTime.setText(TimeUtils.formatTime(this, wakeHour, wakeMinute));
                 updateDurationWarning();
-            }, wakeHour, wakeMinute, false);
+            }, wakeHour, wakeMinute, is24);
             dialog.show();
         });
 

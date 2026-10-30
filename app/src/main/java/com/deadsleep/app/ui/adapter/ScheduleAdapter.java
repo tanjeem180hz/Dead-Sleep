@@ -52,8 +52,9 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
     public void onBindViewHolder(@NonNull ScheduleViewHolder holder, int position) {
         SleepSchedule schedule = schedules.get(position);
 
+        android.content.Context ctx = holder.itemView.getContext();
         holder.tvName.setText(schedule.getName());
-        holder.tvTimes.setText(schedule.getFormattedSleepTime() + " → " + schedule.getFormattedWakeTime());
+        holder.tvTimes.setText(schedule.getFormattedSleepTime(ctx) + " → " + schedule.getFormattedWakeTime(ctx));
         holder.tvDays.setText(schedule.getFormattedDays());
         holder.tvDuration.setText(schedule.getFormattedDuration());
         holder.tvChallenge.setText(schedule.getChallengeType() + " (" + schedule.getChallengeDifficulty() + ")");
