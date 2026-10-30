@@ -58,7 +58,7 @@
 Ready to use on any Android smartphone, tablet, or foldable. No developer tools or computer required.
 
 ### 🔗 Download Links
-- 🚀 **[Direct Download: DeadSleep-v1.0.0.apk (6.51 MB)](https://github.com/tanjeem180hz/Dead-Sleep/raw/main/release/DeadSleep-v1.0.0.apk)**
+- 🚀 **[Direct Download: DeadSleep-v1.0.0.apk (6.52 MB)](https://github.com/tanjeem180hz/Dead-Sleep/raw/main/release/DeadSleep-v1.0.0.apk)**
 - 📁 **[Browse File in GitHub Repository](https://github.com/tanjeem180hz/Dead-Sleep/blob/main/release/DeadSleep-v1.0.0.apk)**
 
 ### 📱 Build & Package Specifications
@@ -68,13 +68,13 @@ Ready to use on any Android smartphone, tablet, or foldable. No developer tools 
 | **Package Name** | `com.deadsleep.app` |
 | **Version** | `1.0.0` (Build `1`) |
 | **File Name** | `DeadSleep-v1.0.0.apk` |
-| **File Size** | `6.51 MB` (6,505,669 bytes) |
+| **File Size** | `6.52 MB` (6,518,510 bytes) |
 | **Minimum Android** | Android 8.0 Oreo (`API 26`) |
 | **Target Android** | Android 15 (`API 35` - Latest Stable) |
 | **Processor Architecture** | Universal bytecode (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`) |
 | **Signature Schemes** | `v1 (JAR)` + `v2 (APK Signature Scheme v2)` verified |
-| **SHA-256 Checksum** | `6EE9A95B5E524DBFF59081D7655E495E8A46C5ABF9D52269762342653430FF72` |
-| **Network Permission** | None (100% Offline, Zero data leaves your device) |
+| **SHA-256 Checksum** | `91F58620844E9FA6802D9F647E8D0658DA9CDEB429B3164834F34F30D64A32A2` |
+| **Auto-Update Engine** | Direct GitHub repository synchronization (`version.json` + Mandatory Lock) |
 
 ### 📲 Easy 3-Step Installation Guide
 1. **Download:** Click the green **[Download Direct APK](https://github.com/tanjeem180hz/Dead-Sleep/raw/main/release/DeadSleep-v1.0.0.apk)** button on your Android phone browser.
