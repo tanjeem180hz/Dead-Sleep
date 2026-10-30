@@ -110,6 +110,9 @@ public class AppsFragment extends Fragment implements AppAdapter.OnAppToggleList
             RestrictionManager.getInstance(requireContext()).scanAndSeedInstalledApps();
         });
 
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnSelectAllCategory);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnRescanApps);
+
         binding.btnWhitelist.setOnClickListener(v -> {
             startActivity(new Intent(requireContext(), WhitelistActivity.class));
         });
