@@ -259,7 +259,50 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- 5. About & Privacy -->
+        <!-- 5. Updates & Releases -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="UPDATES &amp; VERSION"
+            android:textColor="@color/md_theme_dark_primary"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@color/card_bg"
+            app:cardCornerRadius="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <Button
+                    android:id="@+id/btnCheckUpdates"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="🚀 Check for Updates (v1.0.0)" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Checks GitHub repository for mandatory releases"
+                    android:textColor="@color/md_theme_dark_onSurfaceVariant"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- 6. About & Privacy -->
         <Button
             android:id="@+id/btnAbout"
             style="@style/Widget.Material3.Button.TextButton"
@@ -267,7 +310,7 @@
             android:layout_height="52dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="32dp"
-            android:text="About Dead Sleep &amp; 100% Offline Privacy"
+            android:text="About Dead Sleep &amp; Privacy"
             android:textColor="@color/md_theme_dark_secondary" />
 
     </LinearLayout>
