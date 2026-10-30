@@ -22,9 +22,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="07:00"
+        android:text="07:00 AM"
         android:textColor="@color/md_theme_dark_onBackground"
-        android:textSize="64sp"
+        android:textSize="56sp"
         android:textStyle="bold" />
 
     <TextView

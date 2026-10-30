@@ -113,8 +113,8 @@ public class ScheduleEditActivity extends AppCompatActivity {
         wakeHour = currentSchedule.getWakeHour();
         wakeMinute = currentSchedule.getWakeMinute();
 
-        binding.tvSleepTime.setText(TimeUtils.formatTime(sleepHour, sleepMinute));
-        binding.tvWakeTime.setText(TimeUtils.formatTime(wakeHour, wakeMinute));
+        binding.tvSleepTime.setText(TimeUtils.formatTime(this, sleepHour, sleepMinute));
+        binding.tvWakeTime.setText(TimeUtils.formatTime(this, wakeHour, wakeMinute));
         updateDurationWarning();
 
         // Populate days
