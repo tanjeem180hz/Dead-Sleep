@@ -68,12 +68,12 @@ Ready to use on any Android smartphone, tablet, or foldable. No developer tools 
 | **Package Name** | `com.deadsleep.app` |
 | **Version** | `1.0.0` (Build `1`) |
 | **File Name** | `DeadSleep-v1.0.0.apk` |
-| **File Size** | `6.52 MB` (6,518,510 bytes) |
+| **File Size** | `6.52 MB` (6,521,470 bytes) |
 | **Minimum Android** | Android 8.0 Oreo (`API 26`) |
 | **Target Android** | Android 15 (`API 35` - Latest Stable) |
 | **Processor Architecture** | Universal bytecode (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`) |
 | **Signature Schemes** | `v1 (JAR)` + `v2 (APK Signature Scheme v2)` verified |
-| **SHA-256 Checksum** | `91F58620844E9FA6802D9F647E8D0658DA9CDEB429B3164834F34F30D64A32A2` |
+| **SHA-256 Checksum** | `88823C40FDA97BE68E2EA1839A31AD39F6CE615E0536D569A34B19F1E8EC63AA` |
 | **Auto-Update Engine** | Direct GitHub repository synchronization (`version.json` + Mandatory Lock) |
 
 ### 📲 Easy 3-Step Installation Guide
