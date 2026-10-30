@@ -44,4 +44,37 @@ public class TimeUtilsTest {
         // 65 seconds = 1 minute, 5 seconds
         assertEquals("01:05", TimeUtils.formatCountdown(65 * 1000L));
     }
+
+    @Test
+    public void testFormatCountdownVerbose() {
+        assertEquals("01h 01m 01s", TimeUtils.formatCountdownVerbose(3661 * 1000L));
+        assertEquals("01m 05s", TimeUtils.formatCountdownVerbose(65 * 1000L));
+        assertEquals("15s", TimeUtils.formatCountdownVerbose(15 * 1000L));
+        assertEquals("00m 00s", TimeUtils.formatCountdownVerbose(0));
+    }
+
+    @Test
+    public void testGetTargetWakeTimeMillis() {
+        java.util.Calendar sleepCal = java.util.Calendar.getInstance();
+        sleepCal.set(2026, java.util.Calendar.OCTOBER, 30, 23, 0, 0); // Oct 30, 23:00
+        sleepCal.set(java.util.Calendar.MILLISECOND, 0);
+
+        long wakeMillis = TimeUtils.getTargetWakeTimeMillis(sleepCal.getTimeInMillis(), 7, 0);
+        java.util.Calendar wakeCal = java.util.Calendar.getInstance();
+        wakeCal.setTimeInMillis(wakeMillis);
+
+        assertEquals(2026, wakeCal.get(java.util.Calendar.YEAR));
+        assertEquals(java.util.Calendar.OCTOBER, wakeCal.get(java.util.Calendar.MONTH));
+        assertEquals(31, wakeCal.get(java.util.Calendar.DAY_OF_MONTH)); // Next morning: Oct 31
+        assertEquals(7, wakeCal.get(java.util.Calendar.HOUR_OF_DAY));
+        assertEquals(0, wakeCal.get(java.util.Calendar.MINUTE));
+    }
+
+    @Test
+    public void testFormatTime() {
+        assertEquals("11:00 PM", TimeUtils.formatTime(23, 0));
+        assertEquals("7:00 AM", TimeUtils.formatTime(7, 0));
+        assertEquals("23:00", TimeUtils.formatTime24(23, 0));
+        assertEquals("07:00", TimeUtils.formatTime24(7, 0));
+    }
 }
