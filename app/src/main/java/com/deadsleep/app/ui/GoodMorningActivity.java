@@ -54,5 +54,8 @@ public class GoodMorningActivity extends AppCompatActivity {
             startActivity(main);
             finish();
         });
+
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnStartDay);
+        com.deadsleep.app.util.AnimationHelper.pop(binding.tvGmStreak);
     }
 }
