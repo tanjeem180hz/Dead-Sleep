@@ -31,6 +31,9 @@ public class PreferencesManager {
     private static final String KEY_CURRENT_STREAK = "key_current_streak";
     private static final String KEY_BEST_STREAK = "key_best_streak";
     private static final String KEY_LAST_STREAK_DATE = "key_last_streak_date";
+    private static final String KEY_BEDTIME_MODE_AUTO_ENABLED = "key_bedtime_mode_auto_enabled";
+    private static final String KEY_BEDTIME_GRAYSCALE_ENABLED = "key_bedtime_grayscale_enabled";
+    private static final String KEY_BEDTIME_DND_ENABLED = "key_bedtime_dnd_enabled";
 
     private static volatile PreferencesManager INSTANCE;
     private final SharedPreferences prefs;
