@@ -140,14 +140,17 @@ public class SleepModeActiveActivity extends AppCompatActivity {
         com.deadsleep.app.data.AppDatabase.getExecutor().execute(() -> {
             try {
                 com.deadsleep.app.model.SleepSession session = com.deadsleep.app.data.DeadSleepRepository.getInstance(this).getActiveSessionSync();
-                if (session != null && session.getTargetWakeTimeMillis() > 0) {
+                if (session != null && session.getTargetWakeTimeMillis() > System.currentTimeMillis()) {
                     cachedWakeTimeMillis = session.getTargetWakeTimeMillis();
                 } else {
                     long schedId = com.deadsleep.app.data.PreferencesManager.getInstance(this).getCurrentScheduleId();
                     com.deadsleep.app.model.SleepSchedule schedule = com.deadsleep.app.data.DeadSleepRepository.getInstance(this).getScheduleById(schedId);
+                    if (schedule == null) {
+                        schedule = ScheduleManager.getInstance(this).getNextActiveSchedule();
+                    }
                     if (schedule != null) {
-                        cachedWakeTimeMillis = TimeUtils.getNextOccurrenceMillis(
-                                schedule.getWakeHour(), schedule.getWakeMinute(), schedule.getDaysOfWeek()
+                        cachedWakeTimeMillis = TimeUtils.getTargetWakeTimeMillis(
+                                System.currentTimeMillis(), schedule.getWakeHour(), schedule.getWakeMinute()
                         );
                     }
                 }
@@ -156,6 +159,12 @@ public class SleepModeActiveActivity extends AppCompatActivity {
 
             runOnUiThread(() -> {
                 if (isFinishing() || isDestroyed() || binding == null) return;
+                if (cachedWakeTimeMillis > 0) {
+                    java.util.Calendar cal = java.util.Calendar.getInstance();
+                    cal.setTimeInMillis(cachedWakeTimeMillis);
+                    String formatted = TimeUtils.formatTime(SleepModeActiveActivity.this, cal.get(java.util.Calendar.HOUR_OF_DAY), cal.get(java.util.Calendar.MINUTE));
+                    binding.tvActiveWakeTime.setText("Wake-up scheduled for " + formatted);
+                }
                 startCountdown();
             });
         });
@@ -169,9 +178,9 @@ public class SleepModeActiveActivity extends AppCompatActivity {
                 if (isFinishing() || isDestroyed() || binding == null) return;
                 if (cachedWakeTimeMillis > 0) {
                     long remaining = Math.max(0, cachedWakeTimeMillis - System.currentTimeMillis());
-                    binding.tvActiveCountdown.setText(TimeUtils.formatCountdown(remaining));
+                    binding.tvActiveCountdown.setText(TimeUtils.formatCountdownVerbose(remaining));
                 } else {
-                    binding.tvActiveCountdown.setText("00:00");
+                    binding.tvActiveCountdown.setText("00m 00s");
                 }
                 handler.postDelayed(this, 1000);
             }
