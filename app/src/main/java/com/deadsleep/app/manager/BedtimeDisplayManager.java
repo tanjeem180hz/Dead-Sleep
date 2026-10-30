@@ -86,11 +86,9 @@ public final class BedtimeDisplayManager {
     public static void openColorCorrectionSettings(Activity activity) {
         if (activity == null) return;
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                Intent intent = new Intent(Settings.ACTION_COLOR_CORRECTION_SETTINGS);
-                activity.startActivity(intent);
-                return;
-            }
+            Intent intent = new Intent("android.settings.COLOR_CORRECTION_SETTINGS");
+            activity.startActivity(intent);
+            return;
         } catch (Exception ignored) {}
 
         try {
