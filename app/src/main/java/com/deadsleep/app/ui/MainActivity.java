@@ -24,6 +24,20 @@ public class MainActivity extends AppCompatActivity {
     private Fragment settingsFragment;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        // Mandatory update check on resuming dashboard
+        com.deadsleep.app.manager.UpdateManager.getInstance(this).checkForUpdate((updateAvailable, info, error) -> {
+            if (isFinishing() || isDestroyed()) return;
+            if (updateAvailable && info != null) {
+                android.content.Intent updateIntent = new android.content.Intent(this, ForceUpdateActivity.class);
+                updateIntent.putExtra(ForceUpdateActivity.EXTRA_UPDATE_INFO, info);
+                startActivity(updateIntent);
+            }
+        });
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());

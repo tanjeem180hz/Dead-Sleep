@@ -27,8 +27,25 @@ public class SplashActivity extends AppCompatActivity {
         RestrictionManager.getInstance(this).scanAndSeedInstalledApps();
         ScheduleManager.getInstance(this).rescheduleAll();
 
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            if (isFinishing()) return;
+        final Handler handler = new Handler(Looper.getMainLooper());
+        final boolean[] navigated = {false};
+
+        // 1. Asynchronously check GitHub for mandatory auto-updates
+        UpdateManager.getInstance(this).checkForUpdate((updateAvailable, info, error) -> {
+            if (isFinishing() || navigated[0]) return;
+            if (updateAvailable && info != null) {
+                navigated[0] = true;
+                Intent updateIntent = new Intent(this, ForceUpdateActivity.class);
+                updateIntent.putExtra(ForceUpdateActivity.EXTRA_UPDATE_INFO, info);
+                startActivity(updateIntent);
+                finish();
+            }
+        });
+
+        // 2. Fallback timer if update check takes longer than 1500ms or device is offline
+        handler.postDelayed(() -> {
+            if (isFinishing() || navigated[0]) return;
+            navigated[0] = true;
 
             PreferencesManager prefs = PreferencesManager.getInstance(this);
             if (!prefs.isOnboardingCompleted()) {
@@ -39,6 +56,6 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(new Intent(this, MainActivity.class));
             }
             finish();
-        }, 1200);
+        }, 1500);
     }
 }
