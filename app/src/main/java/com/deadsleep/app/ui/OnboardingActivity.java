@@ -59,6 +59,23 @@ public class OnboardingActivity extends AppCompatActivity {
         adapter = new OnboardingAdapter(pages);
         viewPager.setAdapter(adapter);
 
+        // Smooth Page Zoom Transformer
+        viewPager.setPageTransformer((page, position) -> {
+            if (position < -1) {
+                page.setAlpha(0f);
+            } else if (position <= 1) {
+                float factor = Math.max(0.85f, 1 - Math.abs(position));
+                page.setScaleX(factor);
+                page.setScaleY(factor);
+                page.setAlpha(Math.max(0.4f, 1 - Math.abs(position)));
+            } else {
+                page.setAlpha(0f);
+            }
+        });
+
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(btnNext);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(btnSkip);
+
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
