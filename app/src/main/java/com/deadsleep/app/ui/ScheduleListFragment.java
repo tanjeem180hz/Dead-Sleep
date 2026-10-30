@@ -59,6 +59,8 @@ public class ScheduleListFragment extends Fragment implements ScheduleAdapter.On
             intent.putExtra(Constants.EXTRA_SCHEDULE_ID, -1L);
             startActivity(intent);
         });
+
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.fabAddSchedule);
     }
 
     @Override

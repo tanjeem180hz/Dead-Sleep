@@ -197,6 +197,19 @@ public class SettingsFragment extends Fragment {
         binding.btnAbout.setOnClickListener(v -> {
             startActivity(new Intent(requireContext(), AboutActivity.class));
         });
+
+        // Tactile Spring Touch Feedback
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnOpenBedtimeSectionSettings);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnTestAlarm);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnPracticeChallenge);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnPermissionsHealth);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnWhitelistSettings);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnDisableProtection);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnExportCSV);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnExportJSON);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnResetData);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnCheckUpdates);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnAbout);
     }
 
     private void showPracticeChallengePicker() {
