@@ -8,6 +8,7 @@
     android:padding="32dp">
 
     <ImageView
+        android:id="@+id/ivLockMoon"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:src="@drawable/ic_launcher_foreground"

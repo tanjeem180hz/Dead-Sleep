@@ -29,6 +29,9 @@ public class LockOverlayActivity extends AppCompatActivity {
             com.deadsleep.app.manager.BedtimeDisplayManager.applyGrayscaleToView(binding.getRoot());
         }
 
+        com.deadsleep.app.util.AnimationHelper.startPulseBreathing(binding.ivLockMoon);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnGoToSleep);
+
         String blockedPackage = getIntent().getStringExtra(Constants.EXTRA_BLOCKED_PACKAGE);
         if (blockedPackage != null) {
             binding.tvBlockedAppName.setText(blockedPackage);
