@@ -145,12 +145,9 @@ public class BedtimeActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     if (isFinishing() || isDestroyed() || binding == null) return;
                     if (finalSched != null) {
-                        String bedtime = TimeUtils.formatTime(finalSched.getBedtimeHour(), finalSched.getBedtimeMinute());
-                        String wake = TimeUtils.formatTime(finalSched.getWakeHour(), finalSched.getWakeMinute());
-                        long durationMin = TimeUtils.calculateDurationMinutes(
-                                finalSched.getBedtimeHour(), finalSched.getBedtimeMinute(),
-                                finalSched.getWakeHour(), finalSched.getWakeMinute()
-                        );
+                        String bedtime = finalSched.getFormattedSleepTime(this);
+                        String wake = finalSched.getFormattedWakeTime(this);
+                        long durationMin = finalSched.getDurationMinutes();
                         long durHrs = durationMin / 60;
                         long durMins = durationMin % 60;
                         binding.tvCurrentScheduleInfo.setText(
