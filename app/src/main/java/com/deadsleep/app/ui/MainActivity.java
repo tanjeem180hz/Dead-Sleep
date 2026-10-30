@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
             if (updateAvailable && info != null) {
                 android.content.Intent updateIntent = new android.content.Intent(this, ForceUpdateActivity.class);
                 updateIntent.putExtra(ForceUpdateActivity.EXTRA_UPDATE_INFO, info);
+                updateIntent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(updateIntent);
             }
         });

@@ -1,7 +1,6 @@
 package com.deadsleep.app.ui;
 
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.widget.Toast;
 
@@ -13,12 +12,14 @@ import com.deadsleep.app.BuildConfig;
 import com.deadsleep.app.databinding.ActivityForceUpdateBinding;
 import com.deadsleep.app.manager.UpdateManager;
 import com.deadsleep.app.model.UpdateInfo;
+import com.deadsleep.app.util.AnimationHelper;
 
 import java.io.File;
 import java.util.Locale;
 
 /**
  * Mandatory full-screen update screen that blocks app usage until the latest GitHub release is installed.
+ * Automatically initiates APK download immediately upon opening and prompts installation.
  */
 public class ForceUpdateActivity extends AppCompatActivity {
 
@@ -51,6 +52,12 @@ public class ForceUpdateActivity extends AppCompatActivity {
                 ).show();
             }
         });
+
+        AnimationHelper.attachBounceFeedback(binding.btnDownloadUpdate);
+        AnimationHelper.attachBounceFeedback(binding.btnExitApp);
+
+        // Automatically start downloading update right away upon opening!
+        startDownload();
     }
 
     private void setupUI() {
@@ -74,6 +81,9 @@ public class ForceUpdateActivity extends AppCompatActivity {
                     if (info.getReleaseNotes() != null && !info.getReleaseNotes().isEmpty()) {
                         binding.tvReleaseNotes.setText(info.getReleaseNotes());
                     }
+                    if (!isDownloading && (downloadedApkFile == null || !downloadedApkFile.exists())) {
+                        startDownload();
+                    }
                 }
             });
         }
@@ -88,9 +98,7 @@ public class ForceUpdateActivity extends AppCompatActivity {
             startDownload();
         });
 
-        binding.btnExitApp.setOnClickListener(v -> {
-            finishAffinity();
-        });
+        binding.btnExitApp.setOnClickListener(v -> finishAffinity());
     }
 
     private void startDownload() {
@@ -99,7 +107,7 @@ public class ForceUpdateActivity extends AppCompatActivity {
 
         binding.layoutProgress.setVisibility(View.VISIBLE);
         binding.btnDownloadUpdate.setEnabled(false);
-        binding.btnDownloadUpdate.setText("Downloading Update...");
+        binding.btnDownloadUpdate.setText("Downloading Update Automatically... ⚡");
 
         String apkUrl = (updateInfo != null) ? updateInfo.getApkUrl() : UpdateManager.GITHUB_DIRECT_APK_URL;
 
@@ -129,7 +137,8 @@ public class ForceUpdateActivity extends AppCompatActivity {
                 binding.btnDownloadUpdate.setEnabled(true);
                 binding.btnDownloadUpdate.setText("📦 Tap to Install Update");
 
-                Toast.makeText(ForceUpdateActivity.this, "Download complete! Launching installer...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ForceUpdateActivity.this, "Download complete! Opening package installer...", Toast.LENGTH_SHORT).show();
+                // Automatically launch package installer dialog
                 UpdateManager.getInstance(ForceUpdateActivity.this).installApk(ForceUpdateActivity.this, apkFile);
             }
 
@@ -148,9 +157,10 @@ public class ForceUpdateActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Check if user returned from Settings after granting unknown sources
-        if (downloadedApkFile != null && downloadedApkFile.exists()) {
+        // If user returned from Settings after granting unknown sources, trigger install automatically
+        if (downloadedApkFile != null && downloadedApkFile.exists() && !isDownloading) {
             binding.btnDownloadUpdate.setText("📦 Tap to Install Update");
+            UpdateManager.getInstance(this).installApk(this, downloadedApkFile);
         }
     }
 }
