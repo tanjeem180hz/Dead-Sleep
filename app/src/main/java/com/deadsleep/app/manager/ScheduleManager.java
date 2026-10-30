@@ -73,16 +73,9 @@ public class ScheduleManager {
             );
 
             // Compute corresponding wake time
-            Calendar wakeCal = Calendar.getInstance();
-            wakeCal.setTimeInMillis(nextSleepTime);
-            wakeCal.set(Calendar.HOUR_OF_DAY, nextSchedule.getWakeHour());
-            wakeCal.set(Calendar.MINUTE, nextSchedule.getWakeMinute());
-            wakeCal.set(Calendar.SECOND, 0);
-            if (wakeCal.getTimeInMillis() <= nextSleepTime) {
-                // Crosses midnight: wake time is next morning
-                wakeCal.add(Calendar.DAY_OF_YEAR, 1);
-            }
-            long nextWakeTime = wakeCal.getTimeInMillis();
+            long nextWakeTime = TimeUtils.getTargetWakeTimeMillis(
+                    nextSleepTime, nextSchedule.getWakeHour(), nextSchedule.getWakeMinute()
+            );
 
             // 1. Schedule Bedtime Nudges
             int leadMinutes = preferencesManager.getNudgeLeadMinutes();
