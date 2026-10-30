@@ -189,6 +189,31 @@ public class PreferencesManager {
         prefs.edit().putString(KEY_LAST_STREAK_DATE, date).apply();
     }
 
+    // Bedtime Mode Settings
+    public boolean isBedtimeModeAutoEnabled() {
+        return prefs.getBoolean(KEY_BEDTIME_MODE_AUTO_ENABLED, true);
+    }
+
+    public void setBedtimeModeAutoEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_BEDTIME_MODE_AUTO_ENABLED, enabled).apply();
+    }
+
+    public boolean isBedtimeGrayscaleEnabled() {
+        return prefs.getBoolean(KEY_BEDTIME_GRAYSCALE_ENABLED, true);
+    }
+
+    public void setBedtimeGrayscaleEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_BEDTIME_GRAYSCALE_ENABLED, enabled).apply();
+    }
+
+    public boolean isBedtimeDndEnabled() {
+        return prefs.getBoolean(KEY_BEDTIME_DND_ENABLED, false);
+    }
+
+    public void setBedtimeDndEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_BEDTIME_DND_ENABLED, enabled).apply();
+    }
+
     public void resetAll() {
         prefs.edit().clear().apply();
     }
