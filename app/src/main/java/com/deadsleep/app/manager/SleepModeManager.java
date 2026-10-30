@@ -145,6 +145,7 @@ public class SleepModeManager {
 
         // Restore normal full-color display on emergency exit
         BedtimeDisplayManager.disableGrayscale(context);
+        applyBedtimeDnd(false);
 
         AppDatabase.getExecutor().execute(() -> {
             SleepSession session = repository.getActiveSessionSync();
@@ -167,5 +168,20 @@ public class SleepModeManager {
      */
     public boolean canEditSchedules() {
         return !preferencesManager.isSleepModeActive();
+    }
+
+    private void applyBedtimeDnd(boolean enable) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null) {
+            try {
+                NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                if (nm != null && nm.isNotificationPolicyAccessGranted()) {
+                    if (enable) {
+                        nm.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALARMS);
+                    } else {
+                        nm.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
+                    }
+                }
+            } catch (Exception ignored) {}
+        }
     }
 }
