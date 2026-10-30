@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
                     .commitAllowingStateLoss();
         }
 
+        handleOpenTab(getIntent());
+
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
             Fragment selected = null;
             int itemId = item.getItemId();
@@ -73,11 +75,33 @@ public class MainActivity extends AppCompatActivity {
 
             if (selected != null) {
                 getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                         .replace(R.id.navHostFragment, selected)
                         .commitAllowingStateLoss();
                 return true;
             }
             return false;
         });
+    }
+
+    @Override
+    protected void onNewIntent(android.content.Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleOpenTab(intent);
+    }
+
+    private void handleOpenTab(android.content.Intent intent) {
+        if (intent == null || binding == null) return;
+        String openTab = intent.getStringExtra("open_tab");
+        if ("schedule".equals(openTab)) {
+            binding.bottomNavigation.setSelectedItemId(R.id.nav_schedule);
+        } else if ("apps".equals(openTab)) {
+            binding.bottomNavigation.setSelectedItemId(R.id.nav_apps);
+        } else if ("stats".equals(openTab)) {
+            binding.bottomNavigation.setSelectedItemId(R.id.nav_stats);
+        } else if ("settings".equals(openTab)) {
+            binding.bottomNavigation.setSelectedItemId(R.id.nav_settings);
+        }
     }
 }
