@@ -110,6 +110,13 @@
                 android:layout_height="wrap_content"
                 android:text="Browsers" />
 
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipCatOther"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Other" />
+
         </com.google.android.material.chip.ChipGroup>
 
     </HorizontalScrollView>
@@ -142,13 +149,30 @@
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvApps"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="8dp"
-        android:clipToPadding="false"
-        android:paddingBottom="24dp" />
+        android:layout_marginTop="8dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvApps"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="24dp" />
+
+        <TextView
+            android:id="@+id/tvEmptyApps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="No apps found.\nPull or tap Rescan to detect installed apps."
+            android:textColor="@color/md_theme_dark_onSurfaceVariant"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:visibility="gone" />
+
+    </FrameLayout>
 
 </LinearLayout>
