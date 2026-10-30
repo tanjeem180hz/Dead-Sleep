@@ -115,6 +115,14 @@ public class BedtimeActivity extends AppCompatActivity {
         });
 
         binding.btnGrantDndPermission.setOnClickListener(v -> requestDndPermission());
+
+        // Tactile Spring Touch Feedback
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnBack);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnEditSchedule);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnTestGrayscale);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnOpenColorCorrection);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnCopyAdbCommand);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.btnGrantDndPermission);
     }
 
     private void toggleGrayscaleTest() {
