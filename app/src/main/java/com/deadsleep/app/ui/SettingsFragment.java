@@ -152,6 +152,23 @@ public class SettingsFragment extends Fragment {
                     .show();
         });
 
+        binding.btnCheckUpdates.setText("🚀 Check for Updates (v" + com.deadsleep.app.BuildConfig.VERSION_NAME + ")");
+        binding.btnCheckUpdates.setOnClickListener(v -> {
+            Toast.makeText(requireContext(), "Checking GitHub for updates...", Toast.LENGTH_SHORT).show();
+            com.deadsleep.app.manager.UpdateManager.getInstance(requireContext()).checkForUpdate((updateAvailable, info, error) -> {
+                if (!isAdded()) return;
+                if (updateAvailable && info != null) {
+                    Intent updateIntent = new Intent(requireContext(), ForceUpdateActivity.class);
+                    updateIntent.putExtra(ForceUpdateActivity.EXTRA_UPDATE_INFO, info);
+                    startActivity(updateIntent);
+                } else if (error != null) {
+                    Toast.makeText(requireContext(), "Update check: " + error, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(), "You are on the latest version! (v" + com.deadsleep.app.BuildConfig.VERSION_NAME + ") ✨", Toast.LENGTH_LONG).show();
+                }
+            });
+        });
+
         binding.btnAbout.setOnClickListener(v -> {
             startActivity(new Intent(requireContext(), AboutActivity.class));
         });
