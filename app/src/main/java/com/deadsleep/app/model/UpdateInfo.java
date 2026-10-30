@@ -41,8 +41,11 @@ public class UpdateInfo implements Serializable {
             } catch (Throwable ignored) {}
 
             // JVM unit test fallback (when android.jar stub returns default values)
+            int code = extractInt(jsonStr, "versionCode", -1);
+            if (code <= 0) return null;
+
             UpdateInfo info = new UpdateInfo();
-            info.versionCode = extractInt(jsonStr, "versionCode", 1);
+            info.versionCode = code;
             info.versionName = extractString(jsonStr, "versionName", "1.0.0");
             info.apkUrl = extractString(jsonStr, "apkUrl", "https://github.com/tanjeem180hz/Dead-Sleep/raw/main/release/DeadSleep-v1.0.0.apk");
             info.forceUpdate = extractBoolean(jsonStr, "forceUpdate", true);
