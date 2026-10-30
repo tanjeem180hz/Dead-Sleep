@@ -1,7 +1,9 @@
 package com.deadsleep.app.ui;
 
+import android.animation.AnimatorSet;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -11,8 +13,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.deadsleep.app.R;
+import com.deadsleep.app.challenge.ChallengeFactory;
 import com.deadsleep.app.data.AppDatabase;
 import com.deadsleep.app.data.DeadSleepRepository;
 import com.deadsleep.app.data.PreferencesManager;
@@ -22,24 +27,43 @@ import com.deadsleep.app.manager.SleepModeManager;
 import com.deadsleep.app.manager.StatsManager;
 import com.deadsleep.app.model.SleepSchedule;
 import com.deadsleep.app.model.SleepSession;
+import com.deadsleep.app.util.AnimationHelper;
+import com.deadsleep.app.util.Constants;
 import com.deadsleep.app.util.PermissionUtils;
 import com.deadsleep.app.util.TimeUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 /**
- * Dashboard screen with real-time live device clock, next sleep countdown, manual sleep mode toggle, streak, and health alerts.
+ * Super-friendly, engaging Home Dashboard with dynamic time-of-day greetings,
+ * breathing animations, tactile spring feedback, live device clock, and quick shortcuts.
  */
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private final Handler tickerHandler = new Handler(Looper.getMainLooper());
     private Runnable tickerRunnable;
+    private AnimatorSet moonPulseAnim;
 
     private long cachedTargetTime = -1;
     private boolean isSleepActive = false;
+    private boolean dotPulseToggle = false;
+    private boolean hasAnimatedEntrance = false;
+
+    private static final String[] SLEEP_TIPS = {
+            "Keeping your bedroom cool (18-20°C / 65-68°F) signals your brain that it is time for deep, restorative sleep. ❄️",
+            "Dimming bright overhead lights 1 hour before sleep helps your pineal gland produce natural melatonin. 🕯️",
+            "Consistent bedtimes—even on weekends—train your circadian rhythm to wake up energized without an alarm. ⏰",
+            "Black & White display strips addictive dopamine cues from your screen, making it effortless to put your phone down. 🖤🤍",
+            "A warm shower or bath 90 minutes before bedtime drops your core body temperature, inducing restful drowsiness. 🛁",
+            "Caffeine has a half-life of 5-7 hours. Switching to water or herbal tea in the afternoon dramatically improves sleep depth. ☕",
+            "Morning sunlight within 30 minutes of waking anchors your internal clock and boosts evening sleepiness. ☀️",
+            "Physical exercise during the day deepens restorative slow-wave sleep; just avoid intense workouts right before bed. 🏃‍♂️"
+    };
+    private int currentTipIndex = 0;
 
     @Nullable
     @Override
@@ -52,6 +76,12 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        initClickListeners();
+        attachTactileAnimations();
+    }
+
+    private void initClickListeners() {
+        // Main Sleep Button
         binding.btnStartSleepNow.setOnClickListener(v -> {
             Context ctx = getContext();
             if (ctx == null) return;
@@ -64,18 +94,41 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        // Protection Status Pill
+        binding.cardStatusPill.setOnClickListener(v -> {
+            Context ctx = getContext();
+            if (ctx == null) return;
+            startActivity(new Intent(ctx, PermissionWizardActivity.class));
+        });
+
         binding.btnFixPermissions.setOnClickListener(v -> {
             Context ctx = getContext();
             if (ctx == null) return;
             startActivity(new Intent(ctx, PermissionWizardActivity.class));
         });
 
-        binding.btnViewAdvice.setOnClickListener(v -> {
+        // Quick Shortcuts Row
+        binding.cardQuickBedtime.setOnClickListener(v -> {
             Context ctx = getContext();
             if (ctx == null) return;
-            startActivity(new Intent(ctx, RoutineAdvisorActivity.class));
+            startActivity(new Intent(ctx, BedtimeActivity.class));
         });
 
+        binding.cardQuickSchedule.setOnClickListener(v -> {
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).selectTab(R.id.nav_schedule);
+            }
+        });
+
+        binding.cardQuickApps.setOnClickListener(v -> {
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).selectTab(R.id.nav_apps);
+            }
+        });
+
+        binding.cardQuickPractice.setOnClickListener(v -> showPracticeChallengePicker());
+
+        // Bedtime Section & Switches
         binding.btnOpenBedtimeSection.setOnClickListener(v -> {
             Context ctx = getContext();
             if (ctx == null) return;
@@ -101,6 +154,51 @@ public class HomeFragment extends Fragment {
             PreferencesManager.getInstance(ctx).setBedtimeGrayscaleEnabled(isChecked);
             updateBedtimeSummary();
         });
+
+        // Sleep Tip Rotation
+        binding.btnNextTip.setOnClickListener(v -> rotateSleepTip());
+
+        // Routine Advisor
+        binding.btnViewAdvice.setOnClickListener(v -> {
+            Context ctx = getContext();
+            if (ctx == null) return;
+            startActivity(new Intent(ctx, RoutineAdvisorActivity.class));
+        });
+    }
+
+    private void attachTactileAnimations() {
+        AnimationHelper.attachBounceFeedback(binding.btnStartSleepNow);
+        AnimationHelper.attachBounceFeedback(binding.cardStatusPill);
+        AnimationHelper.attachBounceFeedback(binding.cardQuickBedtime);
+        AnimationHelper.attachBounceFeedback(binding.cardQuickSchedule);
+        AnimationHelper.attachBounceFeedback(binding.cardQuickApps);
+        AnimationHelper.attachBounceFeedback(binding.cardQuickPractice);
+        AnimationHelper.attachBounceFeedback(binding.btnOpenBedtimeSection);
+        AnimationHelper.attachBounceFeedback(binding.btnNextTip);
+        AnimationHelper.attachBounceFeedback(binding.btnViewAdvice);
+    }
+
+    private void rotateSleepTip() {
+        currentTipIndex = (currentTipIndex + 1) % SLEEP_TIPS.length;
+        binding.tvSleepTipContent.setText(SLEEP_TIPS[currentTipIndex]);
+        AnimationHelper.pop(binding.tvSleepTipContent);
+    }
+
+    private void showPracticeChallengePicker() {
+        Context ctx = getContext();
+        if (ctx == null) return;
+        String[] types = ChallengeFactory.getAvailableChallengeTypes(ctx);
+        new AlertDialog.Builder(ctx)
+                .setTitle("Select Challenge to Practice 🧠")
+                .setItems(types, (dialog, which) -> {
+                    String chosenType = types[which];
+                    Intent intent = new Intent(ctx, ChallengeActivity.class);
+                    intent.putExtra(Constants.EXTRA_IS_PRACTICE, true);
+                    intent.putExtra(Constants.EXTRA_CHALLENGE_TYPE, chosenType);
+                    intent.putExtra(Constants.EXTRA_CHALLENGE_DIFFICULTY, Constants.DIFFICULTY_MEDIUM);
+                    startActivity(intent);
+                })
+                .show();
     }
 
     @Override
@@ -108,12 +206,35 @@ public class HomeFragment extends Fragment {
         super.onResume();
         updateUI();
         startTicker();
+
+        // Start soothing breathing animation on the countdown moon
+        if (binding != null && binding.tvCountdownMoon != null) {
+            moonPulseAnim = AnimationHelper.startPulseBreathing(binding.tvCountdownMoon);
+        }
+
+        // Staggered entrance animation on first appearance
+        if (!hasAnimatedEntrance && binding != null) {
+            hasAnimatedEntrance = true;
+            AnimationHelper.animateStaggeredEntrance(
+                    binding.layoutQuickShortcuts,
+                    binding.cardLiveClock,
+                    binding.cardCountdown,
+                    binding.cardBedtimeMode,
+                    binding.cardSleepTip,
+                    binding.cardStreak,
+                    binding.cardRoutineBanner
+            );
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         stopTicker();
+        if (moonPulseAnim != null) {
+            moonPulseAnim.cancel();
+            moonPulseAnim = null;
+        }
     }
 
     private void updateUI() {
@@ -123,11 +244,41 @@ public class HomeFragment extends Fragment {
         PreferencesManager prefs = PreferencesManager.getInstance(ctx);
         String name = prefs.getUserName();
         if (name == null || name.trim().isEmpty()) name = "Friend";
-        binding.tvHomeGreeting.setText("Welcome, " + name + " 🌙");
 
-        // Permission health check
+        // Dynamic Time-of-Day Greeting
+        Calendar cal = Calendar.getInstance();
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        String greeting;
+        String quote;
+        if (hour >= 5 && hour < 12) {
+            greeting = "Good morning, " + name + " ☀️";
+            quote = "Seize the day! You're awake and energized.";
+        } else if (hour >= 12 && hour < 17) {
+            greeting = "Good afternoon, " + name + " 🌤️";
+            quote = "Stay productive & remember to stay hydrated.";
+        } else if (hour >= 17 && hour < 22) {
+            greeting = "Good evening, " + name + " 🌆";
+            quote = "Start winding down to ensure deep restorative sleep.";
+        } else {
+            greeting = "Restful night, " + name + " 🌙";
+            quote = "Peaceful dreams. Dead Sleep is guarding your sleep.";
+        }
+
+        binding.tvHomeGreeting.setText(greeting);
+        binding.tvHomeSub.setText(quote);
+
+        // Protection health status check
         boolean allGood = PermissionUtils.areAllCriticalPermissionsGranted(ctx);
         binding.cardSetupHealth.setVisibility(allGood ? View.GONE : View.VISIBLE);
+        if (allGood) {
+            binding.tvStatusPillText.setText("🛡️ Protected");
+            binding.tvStatusPillText.setTextColor(Color.parseColor("#3DDC84"));
+            binding.cardStatusPill.setCardBackgroundColor(Color.parseColor("#152820"));
+        } else {
+            binding.tvStatusPillText.setText("⚠️ Fix Setup");
+            binding.tvStatusPillText.setTextColor(Color.parseColor("#FFB4AB"));
+            binding.cardStatusPill.setCardBackgroundColor(Color.parseColor("#3B1E22"));
+        }
 
         // Streaks
         int streak = StatsManager.getInstance(ctx).getCurrentStreak();
@@ -177,9 +328,9 @@ public class HomeFragment extends Fragment {
                         getActivity().runOnUiThread(() -> {
                             if (binding == null) return;
                             if (finalTargetWake > 0) {
-                                java.util.Calendar cal = java.util.Calendar.getInstance();
-                                cal.setTimeInMillis(finalTargetWake);
-                                String wakeStr = TimeUtils.formatTime(bgCtx, cal.get(java.util.Calendar.HOUR_OF_DAY), cal.get(java.util.Calendar.MINUTE));
+                                Calendar c = Calendar.getInstance();
+                                c.setTimeInMillis(finalTargetWake);
+                                String wakeStr = TimeUtils.formatTime(bgCtx, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE));
                                 binding.tvNextScheduleDetail.setText("Wake-up Alarm at " + wakeStr);
                             } else {
                                 binding.tvNextScheduleDetail.setText("Rest well! Alarm will sound in the morning.");
@@ -196,7 +347,7 @@ public class HomeFragment extends Fragment {
                         getActivity().runOnUiThread(() -> {
                             if (binding == null) return;
                             if (nextSched == null) {
-                                binding.tvNextScheduleDetail.setText("No active schedules. Tap Schedules tab to add one.");
+                                binding.tvNextScheduleDetail.setText("No active schedules. Tap Schedule shortcut to add one.");
                             } else {
                                 binding.tvNextScheduleDetail.setText(nextSched.getName() + ": "
                                         + nextSched.getFormattedSleepTime(bgCtx) + " → "
@@ -206,8 +357,7 @@ public class HomeFragment extends Fragment {
                         });
                     }
                 }
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
         });
     }
 
@@ -251,6 +401,10 @@ public class HomeFragment extends Fragment {
         binding.tvLiveClockTime.setText(timeSdf.format(now));
         binding.tvLiveClockDate.setText(dateSdf.format(now));
 
+        // Pulsing dot indicator
+        dotPulseToggle = !dotPulseToggle;
+        binding.viewLiveClockDot.setAlpha(dotPulseToggle ? 1.0f : 0.45f);
+
         // 2. Update Countdown Timer with explicit duration units (e.g. 05h 22m 15s)
         if (cachedTargetTime <= 0) {
             binding.tvCountdownTimer.setText("00m 00s");
@@ -275,6 +429,10 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         stopTicker();
+        if (moonPulseAnim != null) {
+            moonPulseAnim.cancel();
+            moonPulseAnim = null;
+        }
         binding = null;
     }
 }
