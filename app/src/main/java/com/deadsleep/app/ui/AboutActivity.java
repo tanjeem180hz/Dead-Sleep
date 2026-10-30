@@ -21,5 +21,6 @@ public class AboutActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         binding.btnBackAbout.setOnClickListener(v -> finish());
+        binding.tvAboutVersion.setText("Version " + com.deadsleep.app.BuildConfig.VERSION_NAME + " (Build " + com.deadsleep.app.BuildConfig.VERSION_CODE + ")");
     }
 }
