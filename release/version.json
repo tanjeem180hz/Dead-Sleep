@@ -4,6 +4,6 @@
   "apkUrl": "https://github.com/tanjeem180hz/Dead-Sleep/raw/main/release/DeadSleep-v1.0.0.apk",
   "forceUpdate": true,
   "title": "Dead Sleep Mandatory Update 🚀",
-  "releaseNotes": "• Bedtime Mode: Automatic timewise activation according to sleep schedule\n• Black & White (Grayscale) Screen: Eliminates dopamine triggers and blue light during bedtime\n• Live Device Clock on Home Screen with 12h/24h sync\n• All-App Device Scanner & Whitelist with dual-pass package visibility\n• Automatic GitHub Update System with Mandatory Installation",
+  "releaseNotes": "• Friendly Modern UI: Dynamic greetings, 1-tap shortcuts & breathing moon animation\n• Tactile Touch Feedback: Fluid spring bounce and haptics on every interactive card & button\n• Bedtime Mode & B&W Screen: Eliminates phone dopamine & blue-light eye strain\n• Live Device Clock & Syncing Indicator\n• Automatic GitHub Update System with Mandatory Installation",
   "minSupportedVersionCode": 1
 }
