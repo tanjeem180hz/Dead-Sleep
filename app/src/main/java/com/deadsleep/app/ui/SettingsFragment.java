@@ -59,6 +59,15 @@ public class SettingsFragment extends Fragment {
         setupActionButtons();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (binding != null && prefs != null) {
+            binding.switchSettingsAutoBedtime.setChecked(prefs.isBedtimeModeAutoEnabled());
+            binding.switchSettingsGrayscale.setChecked(prefs.isBedtimeGrayscaleEnabled());
+        }
+    }
+
     private void setupNudgeSettings() {
         ArrayAdapter<String> nudgeAdapter = new ArrayAdapter<>(
                 requireContext(), android.R.layout.simple_spinner_dropdown_item, NUDGE_LABELS
@@ -92,6 +101,22 @@ public class SettingsFragment extends Fragment {
     }
 
     private void setupActionButtons() {
+        binding.btnOpenBedtimeSectionSettings.setOnClickListener(v -> {
+            startActivity(new Intent(requireContext(), BedtimeActivity.class));
+        });
+
+        binding.switchSettingsAutoBedtime.setChecked(prefs.isBedtimeModeAutoEnabled());
+        binding.switchSettingsAutoBedtime.setOnCheckedChangeListener((btn, isChecked) -> {
+            prefs.setBedtimeModeAutoEnabled(isChecked);
+            Toast.makeText(requireContext(), isChecked ? "Auto Bedtime Mode Enabled 🌙" : "Auto Bedtime Mode Disabled", Toast.LENGTH_SHORT).show();
+        });
+
+        binding.switchSettingsGrayscale.setChecked(prefs.isBedtimeGrayscaleEnabled());
+        binding.switchSettingsGrayscale.setOnCheckedChangeListener((btn, isChecked) -> {
+            prefs.setBedtimeGrayscaleEnabled(isChecked);
+            Toast.makeText(requireContext(), isChecked ? "B&W Display Mode Enabled 🖤🤍" : "B&W Display Mode Disabled", Toast.LENGTH_SHORT).show();
+        });
+
         binding.btnTestAlarm.setOnClickListener(v -> {
             startActivity(new Intent(requireContext(), AlarmTestActivity.class));
         });
