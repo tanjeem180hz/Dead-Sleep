@@ -1,0 +1,9 @@
+{
+  "versionCode": 1,
+  "versionName": "1.0.0",
+  "apkUrl": "https://github.com/tanjeem180hz/Dead-Sleep/raw/main/release/DeadSleep-v1.0.0.apk",
+  "forceUpdate": true,
+  "title": "Dead Sleep Mandatory Update 🚀",
+  "releaseNotes": "• Real-time Live Device Clock on Home Screen\n• 12-Hour (AM/PM) and 24-Hour System Clock Support\n• Fixed Alarm Screen Clock and Midnight Schedule Math\n• Automatic GitHub Update System with Mandatory Installation",
+  "minSupportedVersionCode": 1
+}
