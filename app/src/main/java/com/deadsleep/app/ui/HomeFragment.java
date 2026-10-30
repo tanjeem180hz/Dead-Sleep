@@ -103,17 +103,6 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void updateBedtimeSummary() {
-        if (binding == null) return;
-        Context ctx = getContext();
-        if (ctx == null) return;
-        PreferencesManager prefs = PreferencesManager.getInstance(ctx);
-        boolean auto = prefs.isBedtimeModeAutoEnabled();
-        boolean gray = prefs.isBedtimeGrayscaleEnabled();
-        String summary = (auto ? "Auto Bedtime: ON" : "Auto Bedtime: OFF") + " • " + (gray ? "B&W Display: ON" : "B&W Display: OFF");
-        binding.tvBedtimeSummary.setText(summary);
-    }
-
     @Override
     public void onResume() {
         super.onResume();
