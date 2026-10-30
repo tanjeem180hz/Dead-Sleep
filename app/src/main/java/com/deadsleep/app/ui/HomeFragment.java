@@ -75,6 +75,32 @@ public class HomeFragment extends Fragment {
             if (ctx == null) return;
             startActivity(new Intent(ctx, RoutineAdvisorActivity.class));
         });
+
+        binding.btnOpenBedtimeSection.setOnClickListener(v -> {
+            Context ctx = getContext();
+            if (ctx == null) return;
+            startActivity(new Intent(ctx, BedtimeActivity.class));
+        });
+
+        binding.cardBedtimeMode.setOnClickListener(v -> {
+            Context ctx = getContext();
+            if (ctx == null) return;
+            startActivity(new Intent(ctx, BedtimeActivity.class));
+        });
+
+        binding.switchHomeAutoBedtime.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Context ctx = getContext();
+            if (ctx == null) return;
+            PreferencesManager.getInstance(ctx).setBedtimeModeAutoEnabled(isChecked);
+            updateBedtimeSummary();
+        });
+
+        binding.switchHomeGrayscale.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Context ctx = getContext();
+            if (ctx == null) return;
+            PreferencesManager.getInstance(ctx).setBedtimeGrayscaleEnabled(isChecked);
+            updateBedtimeSummary();
+        });
     }
 
     @Override
