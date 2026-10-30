@@ -12,6 +12,7 @@ import com.deadsleep.app.R;
 import com.deadsleep.app.data.PreferencesManager;
 import com.deadsleep.app.manager.RestrictionManager;
 import com.deadsleep.app.manager.ScheduleManager;
+import com.deadsleep.app.manager.UpdateManager;
 
 /**
  * Splash entry screen routing user to Onboarding, Active Sleep Mode, or Dashboard.
