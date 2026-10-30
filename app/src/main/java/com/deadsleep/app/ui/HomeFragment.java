@@ -103,6 +103,17 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    private void updateBedtimeSummary() {
+        if (binding == null) return;
+        Context ctx = getContext();
+        if (ctx == null) return;
+        PreferencesManager prefs = PreferencesManager.getInstance(ctx);
+        boolean auto = prefs.isBedtimeModeAutoEnabled();
+        boolean gray = prefs.isBedtimeGrayscaleEnabled();
+        String summary = (auto ? "Auto Bedtime: ON" : "Auto Bedtime: OFF") + " • " + (gray ? "B&W Display: ON" : "B&W Display: OFF");
+        binding.tvBedtimeSummary.setText(summary);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -146,6 +157,11 @@ public class HomeFragment extends Fragment {
             binding.tvCountdownTitle.setText("NEXT SLEEP MODE STARTS IN");
             binding.btnStartSleepNow.setText("🌙 Start Sleep Mode Now");
         }
+
+        // Bedtime Mode switches
+        binding.switchHomeAutoBedtime.setChecked(prefs.isBedtimeModeAutoEnabled());
+        binding.switchHomeGrayscale.setChecked(prefs.isBedtimeGrayscaleEnabled());
+        updateBedtimeSummary();
 
         // Active schedule details & Next sleep/wake calculation on background thread
         AppDatabase.getExecutor().execute(() -> {
@@ -204,6 +220,17 @@ public class HomeFragment extends Fragment {
             } catch (Exception ignored) {
             }
         });
+    }
+
+    private void updateBedtimeSummary() {
+        if (binding == null) return;
+        Context ctx = getContext();
+        if (ctx == null) return;
+        PreferencesManager prefs = PreferencesManager.getInstance(ctx);
+        boolean auto = prefs.isBedtimeModeAutoEnabled();
+        boolean gray = prefs.isBedtimeGrayscaleEnabled();
+        String summary = (auto ? "Auto Bedtime: ON" : "Auto Bedtime: OFF") + " • " + (gray ? "B&W Display: ON" : "B&W Display: OFF");
+        binding.tvBedtimeSummary.setText(summary);
     }
 
     private void startTicker() {
