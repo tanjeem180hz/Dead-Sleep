@@ -32,6 +32,10 @@ public class StatsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         statsManager = StatsManager.getInstance(requireContext());
+
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.badge3Day);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.badge7Day);
+        com.deadsleep.app.util.AnimationHelper.attachBounceFeedback(binding.badge30Day);
     }
 
     @Override

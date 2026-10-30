@@ -8,6 +8,7 @@
     android:padding="32dp">
 
     <ImageView
+        android:id="@+id/ivSleepModeMoon"
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:src="@drawable/ic_launcher_foreground"
