@@ -25,6 +25,10 @@ public class LockOverlayActivity extends AppCompatActivity {
         binding = ActivityLockOverlayBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        if (com.deadsleep.app.data.PreferencesManager.getInstance(this).isBedtimeGrayscaleEnabled()) {
+            com.deadsleep.app.manager.BedtimeDisplayManager.applyGrayscaleToView(binding.getRoot());
+        }
+
         String blockedPackage = getIntent().getStringExtra(Constants.EXTRA_BLOCKED_PACKAGE);
         if (blockedPackage != null) {
             binding.tvBlockedAppName.setText(blockedPackage);
