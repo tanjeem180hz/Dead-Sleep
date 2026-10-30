@@ -93,6 +93,11 @@ public class SleepModeManager {
             if (preferencesManager.isBedtimeGrayscaleEnabled()) {
                 BedtimeDisplayManager.enableGrayscale(context);
             }
+
+            // Apply Bedtime Do Not Disturb (DND)
+            if (preferencesManager.isBedtimeDndEnabled()) {
+                applyBedtimeDnd(true);
+            }
         });
     }
 
@@ -104,6 +109,7 @@ public class SleepModeManager {
 
         // Restore normal full-color display
         BedtimeDisplayManager.disableGrayscale(context);
+        applyBedtimeDnd(false);
 
         AppDatabase.getExecutor().execute(() -> {
             long sessionId = preferencesManager.getActiveSessionId();
