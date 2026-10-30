@@ -104,6 +104,11 @@
             android:excludeFromRecents="true" />
 
         <activity
+            android:name=".ui.BedtimeActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
             android:name=".ui.AlarmRingingActivity"
             android:exported="false"
             android:launchMode="singleTop"
