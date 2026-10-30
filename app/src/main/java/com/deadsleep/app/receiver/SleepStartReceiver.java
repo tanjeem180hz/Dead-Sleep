@@ -15,6 +15,9 @@ public class SleepStartReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         try {
+            if (context != null && !com.deadsleep.app.data.PreferencesManager.getInstance(context).isBedtimeModeAutoEnabled()) {
+                return;
+            }
             long scheduleId = -1;
             if (intent != null) {
                 scheduleId = intent.getLongExtra(Constants.EXTRA_SCHEDULE_ID, -1);
