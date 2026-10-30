@@ -104,4 +104,13 @@ public class MainActivity extends AppCompatActivity {
             binding.bottomNavigation.setSelectedItemId(R.id.nav_settings);
         }
     }
+
+    /**
+     * Programmatically switches to a designated tab by menu item ID.
+     */
+    public void selectTab(int navItemId) {
+        if (binding != null && binding.bottomNavigation != null) {
+            binding.bottomNavigation.setSelectedItemId(navItemId);
+        }
+    }
 }
