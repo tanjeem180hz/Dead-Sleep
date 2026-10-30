@@ -52,19 +52,24 @@ public class SleepModeManager {
 
         AppDatabase.getExecutor().execute(() -> {
             SleepSchedule schedule = repository.getScheduleById(scheduleId);
+            if (schedule == null) {
+                schedule = ScheduleManager.getInstance(context).getNextActiveSchedule();
+            }
             String scheduleName = schedule != null ? schedule.getName() : "Bedtime";
+            long activeSchedId = schedule != null ? schedule.getId() : scheduleId;
 
             SleepSession session = new SleepSession();
-            session.setScheduleId(scheduleId);
+            session.setScheduleId(activeSchedId);
             session.setScheduleName(scheduleName);
             session.setStartTimeMillis(System.currentTimeMillis());
 
             if (schedule != null) {
-                long wakeTime = TimeUtils.getNextOccurrenceMillis(
-                        schedule.getWakeHour(), schedule.getWakeMinute(), schedule.getDaysOfWeek()
+                long wakeTime = TimeUtils.getTargetWakeTimeMillis(
+                        session.getStartTimeMillis(), schedule.getWakeHour(), schedule.getWakeMinute()
                 );
                 session.setTargetWakeTimeMillis(wakeTime);
                 session.setChallengeType(schedule.getChallengeType());
+                preferencesManager.setCurrentScheduleId(schedule.getId());
             }
 
             long sessionId = repository.insertSessionSync(session);
@@ -73,7 +78,7 @@ public class SleepModeManager {
             // Start SleepModeForegroundService
             Intent serviceIntent = new Intent(context, SleepModeForegroundService.class);
             serviceIntent.putExtra(Constants.EXTRA_SESSION_ID, sessionId);
-            serviceIntent.putExtra(Constants.EXTRA_SCHEDULE_ID, scheduleId);
+            serviceIntent.putExtra(Constants.EXTRA_SCHEDULE_ID, activeSchedId);
 
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

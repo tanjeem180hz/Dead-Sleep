@@ -99,7 +99,8 @@ public class ScheduleManager {
         });
     }
 
-    private SleepSchedule findNextActiveSchedule(List<SleepSchedule> schedules) {
+    public SleepSchedule findNextActiveSchedule(List<SleepSchedule> schedules) {
+        if (schedules == null || schedules.isEmpty()) return null;
         SleepSchedule best = null;
         long closest = Long.MAX_VALUE;
         long now = System.currentTimeMillis();
@@ -113,7 +114,19 @@ public class ScheduleManager {
                 best = schedule;
             }
         }
-        return best != null ? best : (schedules.isEmpty() ? null : schedules.get(0));
+        return best != null ? best : schedules.get(0);
+    }
+
+    /**
+     * Synchronously returns the next upcoming enabled schedule.
+     */
+    public SleepSchedule getNextActiveSchedule() {
+        try {
+            List<SleepSchedule> enabled = repository.getEnabledSchedulesSync();
+            return findNextActiveSchedule(enabled);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private void scheduleNudge(long triggerAtMillis, int requestCode, boolean isFinal) {
