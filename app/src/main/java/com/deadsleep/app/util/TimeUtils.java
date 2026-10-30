@@ -25,14 +25,25 @@ public final class TimeUtils {
 
     /**
      * Converts hour and minute to standard AM/PM formatted time string (e.g. 11:30 PM).
+     * Uses Locale.US to ensure standard numerals across all device locales.
      */
     public static String formatTime(int hour, int minute) {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, hour);
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.SECOND, 0);
-        SimpleDateFormat sdf = new SimpleDateFormat("h:mm a", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("h:mm a", Locale.US);
         return sdf.format(cal.getTime());
+    }
+
+    /**
+     * Converts hour and minute based on device 24-hour setting.
+     */
+    public static String formatTime(android.content.Context context, int hour, int minute) {
+        if (context != null && android.text.format.DateFormat.is24HourFormat(context)) {
+            return formatTime24(hour, minute);
+        }
+        return formatTime(hour, minute);
     }
 
     /**
