@@ -19,20 +19,69 @@ public class UpdateInfo implements Serializable {
     public UpdateInfo() {}
 
     public static UpdateInfo fromJson(String jsonStr) {
+        if (jsonStr == null || jsonStr.trim().isEmpty() || !jsonStr.contains("{") || !jsonStr.contains("}")) {
+            return null;
+        }
         try {
-            JSONObject json = new JSONObject(jsonStr);
+            // First attempt with org.json.JSONObject (available on actual Android runtime)
+            try {
+                JSONObject json = new JSONObject(jsonStr);
+                int code = json.optInt("versionCode", -1);
+                if (code != -1) {
+                    UpdateInfo info = new UpdateInfo();
+                    info.versionCode = code;
+                    info.versionName = json.optString("versionName", "1.0.0");
+                    info.apkUrl = json.optString("apkUrl", "https://github.com/tanjeem180hz/Dead-Sleep/raw/main/release/DeadSleep-v1.0.0.apk");
+                    info.forceUpdate = json.optBoolean("forceUpdate", true);
+                    info.title = json.optString("title", "Update Available");
+                    info.releaseNotes = json.optString("releaseNotes", "New improvements and bug fixes.");
+                    info.minSupportedVersionCode = json.optInt("minSupportedVersionCode", 1);
+                    return info;
+                }
+            } catch (Throwable ignored) {}
+
+            // JVM unit test fallback (when android.jar stub returns default values)
             UpdateInfo info = new UpdateInfo();
-            info.versionCode = json.optInt("versionCode", 1);
-            info.versionName = json.optString("versionName", "1.0.0");
-            info.apkUrl = json.optString("apkUrl", "https://github.com/tanjeem180hz/Dead-Sleep/raw/main/release/DeadSleep-v1.0.0.apk");
-            info.forceUpdate = json.optBoolean("forceUpdate", true);
-            info.title = json.optString("title", "Update Available");
-            info.releaseNotes = json.optString("releaseNotes", "New improvements and bug fixes.");
-            info.minSupportedVersionCode = json.optInt("minSupportedVersionCode", 1);
+            info.versionCode = extractInt(jsonStr, "versionCode", 1);
+            info.versionName = extractString(jsonStr, "versionName", "1.0.0");
+            info.apkUrl = extractString(jsonStr, "apkUrl", "https://github.com/tanjeem180hz/Dead-Sleep/raw/main/release/DeadSleep-v1.0.0.apk");
+            info.forceUpdate = extractBoolean(jsonStr, "forceUpdate", true);
+            info.title = extractString(jsonStr, "title", "Update Available");
+            info.releaseNotes = extractString(jsonStr, "releaseNotes", "New improvements and bug fixes.");
+            info.minSupportedVersionCode = extractInt(jsonStr, "minSupportedVersionCode", 1);
             return info;
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private static String extractString(String json, String key, String defaultVal) {
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile("\"" + key + "\"\\s*:\\s*\"([^\"]*)\"");
+        java.util.regex.Matcher m = p.matcher(json);
+        if (m.find()) {
+            return m.group(1).replace("\\n", "\n").replace("\\\"", "\"");
+        }
+        return defaultVal;
+    }
+
+    private static int extractInt(String json, String key, int defaultVal) {
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile("\"" + key + "\"\\s*:\\s*(\\d+)");
+        java.util.regex.Matcher m = p.matcher(json);
+        if (m.find()) {
+            try {
+                return Integer.parseInt(m.group(1));
+            } catch (NumberFormatException ignored) {}
+        }
+        return defaultVal;
+    }
+
+    private static boolean extractBoolean(String json, String key, boolean defaultVal) {
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile("\"" + key + "\"\\s*:\\s*(true|false)");
+        java.util.regex.Matcher m = p.matcher(json);
+        if (m.find()) {
+            return Boolean.parseBoolean(m.group(1));
+        }
+        return defaultVal;
     }
 
     public int getVersionCode() {
