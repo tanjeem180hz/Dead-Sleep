@@ -133,7 +133,10 @@ public class AlarmRingingActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (isFinishing() || isDestroyed() || binding == null) return;
-                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm", Locale.getDefault());
+                boolean is24 = android.text.format.DateFormat.is24HourFormat(AlarmRingingActivity.this);
+                SimpleDateFormat sdf = is24
+                        ? new SimpleDateFormat("HH:mm", Locale.US)
+                        : new SimpleDateFormat("h:mm a", Locale.US);
                 binding.tvAlarmRingingClock.setText(sdf.format(new Date()));
                 timeHandler.postDelayed(this, 1000);
             }

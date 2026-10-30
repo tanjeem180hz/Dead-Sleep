@@ -35,13 +35,16 @@ public class LockOverlayActivity extends AppCompatActivity {
         com.deadsleep.app.data.AppDatabase.getExecutor().execute(() -> {
             try {
                 com.deadsleep.app.model.SleepSession session = com.deadsleep.app.data.DeadSleepRepository.getInstance(this).getActiveSessionSync();
-                long targetWake = (session != null && session.getTargetWakeTimeMillis() > 0) ? session.getTargetWakeTimeMillis() : -1;
+                long targetWake = (session != null && session.getTargetWakeTimeMillis() > System.currentTimeMillis()) ? session.getTargetWakeTimeMillis() : -1;
                 if (targetWake <= 0) {
                     long schedId = com.deadsleep.app.data.PreferencesManager.getInstance(this).getCurrentScheduleId();
                     com.deadsleep.app.model.SleepSchedule schedule = com.deadsleep.app.data.DeadSleepRepository.getInstance(this).getScheduleById(schedId);
+                    if (schedule == null) {
+                        schedule = ScheduleManager.getInstance(this).getNextActiveSchedule();
+                    }
                     if (schedule != null) {
-                        targetWake = TimeUtils.getNextOccurrenceMillis(
-                                schedule.getWakeHour(), schedule.getWakeMinute(), schedule.getDaysOfWeek()
+                        targetWake = TimeUtils.getTargetWakeTimeMillis(
+                                System.currentTimeMillis(), schedule.getWakeHour(), schedule.getWakeMinute()
                         );
                     }
                 }
@@ -49,7 +52,7 @@ public class LockOverlayActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     if (isFinishing() || isDestroyed() || binding == null) return;
                     if (remaining > 0) {
-                        binding.tvLockRemaining.setText("Wake-up in: " + TimeUtils.formatCountdown(remaining));
+                        binding.tvLockRemaining.setText("Wake-up in " + TimeUtils.formatCountdownVerbose(remaining));
                     }
                 });
             } catch (Exception ignored) {}
