@@ -94,6 +94,34 @@ Dead Sleep is tested and compatible across all major manufacturers and Android f
 - **Vivo / iQOO:** Funtouch OS, OriginOS
 - **Motorola / Nokia / Nothing Phone / Sony / ASUS:** Stock & Custom Android builds
 
+---
+
+## ⚡ Git-Driven Automatic & Mandatory Update System
+
+Dead Sleep includes a built-in auto-update engine directly synchronized with this GitHub repository:
+
+### How it works:
+1. **GitHub Version Tracker (`version.json`):**
+   - Whenever you push new code or release an updated APK to GitHub, simply update the `versionCode` in `version.json`:
+     ```json
+     {
+       "versionCode": 2,
+       "versionName": "1.0.1",
+       "apkUrl": "https://github.com/tanjeem180hz/Dead-Sleep/raw/main/release/DeadSleep-v1.0.0.apk",
+       "forceUpdate": true,
+       "title": "Mandatory Security & Performance Update 🚀",
+       "releaseNotes": "• New features and bug fixes."
+     }
+     ```
+2. **Instant App Detection:**
+   - On app startup (`SplashActivity`), on resume (`MainActivity`), or via **Settings → Check for Updates**, Dead Sleep checks `raw.githubusercontent.com/.../version.json`.
+3. **Mandatory App Lock ("Update required to continue"):**
+   - If `remoteVersionCode > currentVersionCode` and `forceUpdate: true`, the app presents a non-dismissible full-screen update gateway (`ForceUpdateActivity`).
+   - Back button and home navigation are locked with a toast notification: *"You must install the update to continue using Dead Sleep."*
+4. **Seamless 1-Tap Download & Install:**
+   - Users tap **Update Now** → The app streams the APK with a live progress bar → Launches Android's system package installer (`FileProvider`).
+
+
 
 ---
 
