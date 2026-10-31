@@ -91,9 +91,13 @@ public class ScheduleEditActivity extends AppCompatActivity {
         binding.spinnerRingtone.setAdapter(ringtoneAdapter);
 
         // Challenge Types Spinner
-        String[] challengeTypes = ChallengeFactory.getAvailableChallengeTypes(this);
+        String[] challengeKeys = ChallengeFactory.getAvailableChallengeTypes(this);
+        String[] challengeDisplayNames = new String[challengeKeys.length];
+        for (int i = 0; i < challengeKeys.length; i++) {
+            challengeDisplayNames[i] = ChallengeFactory.getChallengeDisplayName(challengeKeys[i]);
+        }
         ArrayAdapter<String> challengeAdapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_dropdown_item, challengeTypes
+                this, android.R.layout.simple_spinner_dropdown_item, challengeDisplayNames
         );
         binding.spinnerChallengeType.setAdapter(challengeAdapter);
 
@@ -142,8 +146,9 @@ public class ScheduleEditActivity extends AppCompatActivity {
 
         // Challenge
         String[] types = ChallengeFactory.getAvailableChallengeTypes(this);
+        String normType = ChallengeFactory.normalizeChallengeType(currentSchedule.getChallengeType());
         for (int i = 0; i < types.length; i++) {
-            if (types[i].equalsIgnoreCase(currentSchedule.getChallengeType())) {
+            if (types[i].equalsIgnoreCase(normType)) {
                 binding.spinnerChallengeType.setSelection(i);
                 break;
             }

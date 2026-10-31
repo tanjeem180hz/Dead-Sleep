@@ -93,8 +93,8 @@ public final class ChallengeFactory {
     }
 
     public static String getChallengeIconEmoji(String type) {
-        if (type == null) return "🎲";
-        switch (type.toUpperCase()) {
+        String normalized = normalizeChallengeType(type);
+        switch (normalized) {
             case Constants.CHALLENGE_MATH: return "🔢";
             case Constants.CHALLENGE_MEMORY: return "🃏";
             case Constants.CHALLENGE_PATTERN: return "🧩";
@@ -107,8 +107,8 @@ public final class ChallengeFactory {
     }
 
     public static int getChallengeIconDrawableRes(String type) {
-        if (type == null) return R.drawable.ic_challenge_random;
-        switch (type.toUpperCase()) {
+        String normalized = normalizeChallengeType(type);
+        switch (normalized) {
             case Constants.CHALLENGE_MATH: return R.drawable.ic_challenge_math;
             case Constants.CHALLENGE_MEMORY: return R.drawable.ic_challenge_memory;
             case Constants.CHALLENGE_PATTERN: return R.drawable.ic_challenge_pattern;
@@ -121,8 +121,8 @@ public final class ChallengeFactory {
     }
 
     public static String getChallengeDisplayName(String type) {
-        if (type == null) return "🎲 Surprise Challenge (Mix)";
-        switch (type.toUpperCase()) {
+        String normalized = normalizeChallengeType(type);
+        switch (normalized) {
             case Constants.CHALLENGE_MATH: return "🔢 Math Puzzle";
             case Constants.CHALLENGE_MEMORY: return "🃏 Memory Match";
             case Constants.CHALLENGE_PATTERN: return "🧩 Pattern Sequence";
@@ -135,8 +135,8 @@ public final class ChallengeFactory {
     }
 
     public static String getChallengeFriendlyDescription(String type) {
-        if (type == null) return "Random cognitive challenge every morning";
-        switch (type.toUpperCase()) {
+        String normalized = normalizeChallengeType(type);
+        switch (normalized) {
             case Constants.CHALLENGE_MATH: return "Solve 2 quick, friendly math questions";
             case Constants.CHALLENGE_MEMORY: return "Find 3 matching pairs of soothing symbols";
             case Constants.CHALLENGE_PATTERN: return "Repeat a simple 4-step glowing color pattern";
