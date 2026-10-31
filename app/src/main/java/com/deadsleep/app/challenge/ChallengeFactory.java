@@ -2,6 +2,7 @@ package com.deadsleep.app.challenge;
 
 import android.content.Context;
 
+import com.deadsleep.app.R;
 import com.deadsleep.app.util.Constants;
 
 import java.util.ArrayList;
@@ -76,6 +77,62 @@ public final class ChallengeFactory {
                     Constants.CHALLENGE_PATTERN,
                     Constants.CHALLENGE_REACTION
             };
+        }
+    }
+
+    public static String getChallengeIconEmoji(String type) {
+        if (type == null) return "🎲";
+        switch (type.toUpperCase()) {
+            case Constants.CHALLENGE_MATH: return "🔢";
+            case Constants.CHALLENGE_MEMORY: return "🃏";
+            case Constants.CHALLENGE_PATTERN: return "🧩";
+            case Constants.CHALLENGE_REACTION: return "⚡";
+            case Constants.CHALLENGE_SHAKE: return "📳";
+            case Constants.CHALLENGE_RANDOM:
+            default:
+                return "🎲";
+        }
+    }
+
+    public static int getChallengeIconDrawableRes(String type) {
+        if (type == null) return R.drawable.ic_challenge_random;
+        switch (type.toUpperCase()) {
+            case Constants.CHALLENGE_MATH: return R.drawable.ic_challenge_math;
+            case Constants.CHALLENGE_MEMORY: return R.drawable.ic_challenge_memory;
+            case Constants.CHALLENGE_PATTERN: return R.drawable.ic_challenge_pattern;
+            case Constants.CHALLENGE_REACTION: return R.drawable.ic_challenge_reaction;
+            case Constants.CHALLENGE_SHAKE: return R.drawable.ic_challenge_shake;
+            case Constants.CHALLENGE_RANDOM:
+            default:
+                return R.drawable.ic_challenge_random;
+        }
+    }
+
+    public static String getChallengeDisplayName(String type) {
+        if (type == null) return "🎲 Surprise Challenge (Mix)";
+        switch (type.toUpperCase()) {
+            case Constants.CHALLENGE_MATH: return "🔢 Math Puzzle";
+            case Constants.CHALLENGE_MEMORY: return "🃏 Memory Match";
+            case Constants.CHALLENGE_PATTERN: return "🧩 Pattern Sequence";
+            case Constants.CHALLENGE_REACTION: return "⚡ Reaction Test";
+            case Constants.CHALLENGE_SHAKE: return "📳 Shake-to-Wake";
+            case Constants.CHALLENGE_RANDOM:
+            default:
+                return "🎲 Surprise Challenge (Mix)";
+        }
+    }
+
+    public static String getChallengeFriendlyDescription(String type) {
+        if (type == null) return "Random cognitive challenge every morning";
+        switch (type.toUpperCase()) {
+            case Constants.CHALLENGE_MATH: return "Solve 2 quick, friendly math questions";
+            case Constants.CHALLENGE_MEMORY: return "Find 3 matching pairs of soothing symbols";
+            case Constants.CHALLENGE_PATTERN: return "Repeat a simple 4-step glowing color pattern";
+            case Constants.CHALLENGE_REACTION: return "Tap the screen as soon as it turns green";
+            case Constants.CHALLENGE_SHAKE: return "Gently shake your phone to dismiss";
+            case Constants.CHALLENGE_RANDOM:
+            default:
+                return "A fun, friendly random wake challenge each morning";
         }
     }
 }
