@@ -13,12 +13,16 @@ import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.deadsleep.app.R;
+import com.deadsleep.app.util.AnimationHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 /**
  * Simon-style pattern sequence memory challenge.
+ * Scaled to be friendly, rhythmic, and comfortable for morning alertness.
  */
 public class PatternMemoryChallenge extends Challenge {
 
@@ -36,7 +40,7 @@ public class PatternMemoryChallenge extends Challenge {
             Color.parseColor("#FFD740")  // Bright Yellow
     };
 
-    private static final String[] COLOR_NAMES = {"RED", "BLUE", "GREEN", "YELLOW"};
+    private static final String[] COLOR_NAMES = {"🔴 RED", "🔵 BLUE", "🟢 GREEN", "🟡 YELLOW"};
 
     private final List<Integer> sequence = new ArrayList<>();
     private final List<Integer> userSequence = new ArrayList<>();
@@ -49,18 +53,28 @@ public class PatternMemoryChallenge extends Challenge {
         super(difficulty);
         switch (difficulty) {
             case EASY:
-                this.targetLength = 4;
+                this.targetLength = 3; // Friendly 3 steps for Easy
                 break;
             case HARD:
-                this.targetLength = 8;
+                this.targetLength = 6;
                 break;
             case MEDIUM:
             default:
-                this.targetLength = 6;
+                this.targetLength = 4; // Friendly 4 steps for Medium (was 6)
                 break;
         }
         this.totalProblems = targetLength;
         generate();
+    }
+
+    @Override
+    public String getIconEmoji() {
+        return "🧩";
+    }
+
+    @Override
+    public int getIconDrawableRes() {
+        return R.drawable.ic_challenge_pattern;
     }
 
     @Override
@@ -86,12 +100,12 @@ public class PatternMemoryChallenge extends Challenge {
 
     @Override
     public String getTitle() {
-        return "Pattern Memory Sequence";
+        return "🧩 Pattern Sequence Challenge";
     }
 
     @Override
     public String getInstructions() {
-        return "Watch the " + targetLength + "-step color pattern, then repeat it.";
+        return "Watch the " + targetLength + "-step glowing color pattern, then repeat it.";
     }
 
     @Override
@@ -138,7 +152,7 @@ public class PatternMemoryChallenge extends Challenge {
             pad.setText(COLOR_NAMES[i]);
             pad.setTextColor(Color.WHITE);
             pad.setTypeface(Typeface.DEFAULT_BOLD);
-            pad.setTextSize(18f);
+            pad.setTextSize(16f);
             pad.setBackgroundColor(BASE_COLORS[i]);
 
             GridLayout.LayoutParams param = new GridLayout.LayoutParams();
@@ -146,6 +160,9 @@ public class PatternMemoryChallenge extends Challenge {
             param.height = 200;
             param.setMargins(12, 12, 12, 12);
             pad.setLayoutParams(param);
+
+            // Tactile feedback
+            AnimationHelper.attachBounceFeedback(pad);
 
             pad.setOnClickListener(v -> {
                 if (isPlayingSequence) return;
@@ -166,12 +183,12 @@ public class PatternMemoryChallenge extends Challenge {
                         callback.onChallengeSolved();
                     }
                 } else {
-                    // Mistake!
-                    callback.onChallengeFailed("Wrong pad! Replaying sequence...");
-                    tvStatus.setText("Incorrect! Watch carefully...");
-                    tvStatus.setTextColor(Color.RED);
+                    // Mistake! Friendly replay
+                    callback.onChallengeFailed("Try again! Watch the pattern replay...");
+                    tvStatus.setText("Watch carefully...");
+                    tvStatus.setTextColor(Color.parseColor("#FFD56B"));
                     userSequence.clear();
-                    handler.postDelayed(() -> playSequence(pads, tvStatus), 1200);
+                    handler.postDelayed(() -> playSequence(pads, tvStatus), 1000);
                 }
             });
 
@@ -181,43 +198,38 @@ public class PatternMemoryChallenge extends Challenge {
 
         root.addView(grid);
 
-        // Start playing sequence after 1 second delay
-        handler.postDelayed(() -> playSequence(pads, tvStatus), 1000);
+        // Start playing sequence after a brief pause
+        handler.postDelayed(() -> playSequence(pads, tvStatus), 800);
 
         return root;
     }
 
     private void playSequence(Button[] pads, TextView tvStatus) {
         isPlayingSequence = true;
-        userSequence.clear();
-        tvStatus.setText("Watch sequence...");
+        tvStatus.setText("Watch the pattern...");
         tvStatus.setTextColor(Color.parseColor("#FFD56B"));
+        userSequence.clear();
 
-        for (int i = 0; i < sequence.size(); i++) {
-            final int step = i;
-            final int padIndex = sequence.get(step);
+        for (int step = 0; step < sequence.size(); step++) {
+            final int index = sequence.get(step);
+            final int delay = (step + 1) * 700;
+            final boolean isLast = (step == sequence.size() - 1);
+
             handler.postDelayed(() -> {
-                flashPad(pads[padIndex], padIndex, 500);
-                if (step == sequence.size() - 1) {
+                flashPad(pads[index], index, 400);
+                if (isLast) {
                     handler.postDelayed(() -> {
                         isPlayingSequence = false;
-                        tvStatus.setText("Your turn! Repeat the pattern.");
-                        tvStatus.setTextColor(Color.WHITE);
-                    }, 600);
+                        tvStatus.setText("Your Turn! Repeat the pattern ✨");
+                        tvStatus.setTextColor(Color.parseColor("#3DDC84"));
+                    }, 500);
                 }
-            }, (i + 1) * 800L);
+            }, delay);
         }
     }
 
-    private void flashPad(Button pad, int index, long duration) {
+    private void flashPad(Button pad, int index, int duration) {
         pad.setBackgroundColor(LIT_COLORS[index]);
         handler.postDelayed(() -> pad.setBackgroundColor(BASE_COLORS[index]), duration);
-    }
-
-    @Override
-    public void cleanup() {
-        if (handler != null) {
-            handler.removeCallbacksAndMessages(null);
-        }
     }
 }
