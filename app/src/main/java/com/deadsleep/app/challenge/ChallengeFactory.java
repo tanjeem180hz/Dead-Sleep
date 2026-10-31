@@ -18,10 +18,22 @@ public final class ChallengeFactory {
 
     private ChallengeFactory() {}
 
-    public static Challenge createChallenge(Context context, String type, String difficultyStr) {
-        Challenge.Difficulty difficulty = Challenge.Difficulty.fromString(difficultyStr);
+    public static String normalizeChallengeType(String input) {
+        if (input == null || input.trim().isEmpty()) return Constants.CHALLENGE_RANDOM;
+        String upper = input.toUpperCase();
+        if (upper.contains("MATH")) return Constants.CHALLENGE_MATH;
+        if (upper.contains("MEMORY")) return Constants.CHALLENGE_MEMORY;
+        if (upper.contains("PATTERN")) return Constants.CHALLENGE_PATTERN;
+        if (upper.contains("REACTION")) return Constants.CHALLENGE_REACTION;
+        if (upper.contains("SHAKE")) return Constants.CHALLENGE_SHAKE;
+        return Constants.CHALLENGE_RANDOM;
+    }
 
-        if (Constants.CHALLENGE_RANDOM.equalsIgnoreCase(type) || type == null || type.isEmpty()) {
+    public static Challenge createChallenge(Context context, String rawType, String difficultyStr) {
+        Challenge.Difficulty difficulty = Challenge.Difficulty.fromString(difficultyStr);
+        String type = normalizeChallengeType(rawType);
+
+        if (Constants.CHALLENGE_RANDOM.equalsIgnoreCase(type)) {
             List<String> pool = new ArrayList<>();
             pool.add(Constants.CHALLENGE_MATH);
             pool.add(Constants.CHALLENGE_MEMORY);
