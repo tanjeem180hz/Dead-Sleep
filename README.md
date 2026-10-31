@@ -69,12 +69,12 @@ Ready to use on any Android smartphone, tablet, or foldable. No developer tools 
 | **Package Name** | `com.deadsleep.app` |
 | **Version** | `1.0.0` (Build `1`) |
 | **File Name** | `DeadSleep-v1.0.0.apk` |
-| **File Size** | `6.55 MB` (6,546,051 bytes) |
+| **File Size** | `6.55 MB` (6,552,510 bytes) |
 | **Minimum Android** | Android 8.0 Oreo (`API 26`) |
 | **Target Android** | Android 15 (`API 35` - Latest Stable) |
 | **Processor Architecture** | Universal bytecode (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`) |
 | **Signature Schemes** | `v1 (JAR)` + `v2 (APK Signature Scheme v2)` verified |
-| **SHA-256 Checksum** | `93ECCFEABBD793C8D9088711AD767999AF3AE85B357930CFBC902008CD3FA89C` |
+| **SHA-256 Checksum** | `ADF535991BBCE3485F86D5B6C068804539BC6E9D6922FCE0CFD31495CDBD2594` |
 | **Auto-Update Engine** | Direct GitHub repository synchronization (`version.json` + Mandatory Lock) |
 
 ### 📲 Easy 3-Step Installation Guide
@@ -336,15 +336,16 @@ com.deadsleep.app/
 - **Snooze Discipline:** Configurable maximum snoozes (0 to 3); once exhausted, snooze buttons are disabled.
 - **Alarm Sandbox:** Dedicated "Test Alarm in 10s" screen for safe verification.
 
-### 7. Cognitive Wake Challenges
-The alarm cannot be silenced by tapping. The user must solve one of 5 cognitive challenges:
-1. **Math Challenge:** Dynamic arithmetic (Easy: 2-term addition; Medium: multiplication/subtraction; Hard: 3-term operations) with a custom in-app numeric keypad.
-2. **Memory Challenge:** Card-flip matching game (12 cards on Easy, 16 on Medium, 20 on Hard).
-3. **Pattern Memory Challenge:** Simon-style colored sequence memory (4 to 8 steps).
-4. **Reaction Challenge:** Millisecond reflex test requiring tap within 300–600ms of visual signal with false-start detection.
-5. **Shake Challenge:** Accelerometer physical movement counter (15 to 45 shakes) with an interactive progress ring.
-- **Snooze Escalation:** Each snooze automatically increases puzzle difficulty by one tier.
-- **Anti-Entrapment Emergency Exit:** 10-second hold + confirmation math problem to prevent lockouts in case of hardware sensor faults.
+### 7. Cognitive Wake Challenges (with Rich Graphical Icons & Eased Medium Difficulty) 🧠
+The alarm cannot be dismissed by a groggy accidental swipe. The user must solve one of the cognitive challenges, each branded with vibrant graphical badges, visual previews, and tactile spring feedback:
+1. 🔢 **Math Puzzle (`ic_challenge_math`):** Eased for morning clarity. Medium requires only 2 quick, friendly operations (e.g. `6 × 7` or `24 + 18`) with large tactile numeric keys, celebration card pop, and zero complex 3-term equations on Medium.
+2. 🃏 **Memory Match (`ic_challenge_memory`):** Reduced from 16 cards down to 6 cards (3 pairs) on Medium, featuring high-contrast sleep symbols (`🌙`, `⭐`, `🦉`, `⏰`), generous 200×200dp touch targets, and forgiving retry.
+3. 🧩 **Pattern Sequence (`ic_challenge_pattern`):** Simon-style glowing color sequence, eased from 6 steps down to 4 steps on Medium, with tactile spring pads and friendly re-plays.
+4. ⚡ **Reaction Test (`ic_challenge_reaction`):** Visual reflex test with eased morning threshold relaxed from 480ms to 650ms for 2 comfortable rounds. False starts allow immediate round retry without wiping previous progress.
+5. 📳 **Shake-to-Wake (`ic_challenge_shake`):** Slashed from 40 down to 18 gentle shakes on Medium (~5-6 seconds) with lowered accelerometer threshold (600) so natural wrist movements register smoothly.
+6. 🎲 **Surprise Challenge (Mix):** Automatically rotates a random wake challenge each morning to keep the morning routine fresh and delightful.
+- **Snooze Escalation:** Each snooze automatically steps up difficulty tier by one level.
+- **Anti-Entrapment Emergency Exit:** 10-second button hold with confirmation prompt prevents lockouts in case of hardware sensor faults.
 
 ### 8. Statistics & Consistency Scoring
 - **Sleep Consistency Score (0–100):** Evaluated against schedule adherence (40%), wake-time punctuality (30%), blocked night temptations (15%), and alarm response speed (15%).
