@@ -10,14 +10,19 @@ import android.hardware.SensorManager;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 
+import com.deadsleep.app.R;
+import com.deadsleep.app.util.AnimationHelper;
+
 /**
  * Physical shake-to-wake challenge utilizing the device accelerometer.
+ * Scaled to require comfortable, gentle shaking rather than violent shaking.
  */
 public class ShakeChallenge extends Challenge implements SensorEventListener {
 
@@ -28,28 +33,39 @@ public class ShakeChallenge extends Challenge implements SensorEventListener {
 
     private float lastX, lastY, lastZ;
     private long lastUpdate = 0;
-    private static final int SHAKE_THRESHOLD = 800; // Acceleration threshold
+    private static final int SHAKE_THRESHOLD = 600; // Lowered from 800 for comfortable, smooth registration
 
     private TextView tvCount;
     private ProgressBar progressBar;
     private ChallengeCallback callback;
+    private TextView tvIcon;
 
     public ShakeChallenge(Difficulty difficulty) {
         super(difficulty);
         switch (difficulty) {
             case EASY:
-                this.requiredShakes = 20;
+                this.requiredShakes = 10; // Gentle 10 shakes for Easy
                 break;
             case HARD:
-                this.requiredShakes = 60;
+                this.requiredShakes = 32;
                 break;
             case MEDIUM:
             default:
-                this.requiredShakes = 40;
+                this.requiredShakes = 18; // Friendly 18 shakes for Medium (takes only ~6s)
                 break;
         }
         this.totalProblems = requiredShakes;
         generate();
+    }
+
+    @Override
+    public String getIconEmoji() {
+        return "📳";
+    }
+
+    @Override
+    public int getIconDrawableRes() {
+        return R.drawable.ic_challenge_shake;
     }
 
     public static boolean isSensorAvailable(Context context) {
@@ -70,12 +86,12 @@ public class ShakeChallenge extends Challenge implements SensorEventListener {
 
     @Override
     public String getTitle() {
-        return "Shake-to-Wake Challenge";
+        return "📳 Shake-to-Wake Challenge";
     }
 
     @Override
     public String getInstructions() {
-        return "Shake your phone vigorously " + requiredShakes + " times to dismiss the alarm!";
+        return "Gently shake your phone " + requiredShakes + " times to dismiss the alarm!";
     }
 
     @Override
@@ -108,7 +124,7 @@ public class ShakeChallenge extends Challenge implements SensorEventListener {
         content.setGravity(Gravity.CENTER);
         content.setPadding(32, 40, 32, 40);
 
-        TextView tvIcon = new TextView(context);
+        tvIcon = new TextView(context);
         tvIcon.setText("📱💨");
         tvIcon.setTextSize(50f);
         tvIcon.setGravity(Gravity.CENTER);
@@ -117,7 +133,7 @@ public class ShakeChallenge extends Challenge implements SensorEventListener {
         tvCount = new TextView(context);
         tvCount.setText("0 / " + requiredShakes);
         tvCount.setTextColor(Color.parseColor("#FFD56B"));
-        tvCount.setTextSize(36f);
+        tvCount.setTextSize(38f);
         tvCount.setTypeface(Typeface.DEFAULT_BOLD);
         tvCount.setGravity(Gravity.CENTER);
         tvCount.setPadding(0, 16, 0, 16);
@@ -126,14 +142,15 @@ public class ShakeChallenge extends Challenge implements SensorEventListener {
         progressBar = new ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal);
         progressBar.setMax(requiredShakes);
         progressBar.setProgress(0);
+        progressBar.setProgressTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#3DDC84")));
         LinearLayout.LayoutParams pbParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, 24
+                ViewGroup.LayoutParams.MATCH_PARENT, 26
         );
         progressBar.setLayoutParams(pbParams);
         content.addView(progressBar);
 
         TextView tvHint = new TextView(context);
-        tvHint.setText("Keep shaking firmly!");
+        tvHint.setText("Gently shake to wake your body ✨");
         tvHint.setTextColor(Color.parseColor("#9D85FF"));
         tvHint.setTextSize(14f);
         tvHint.setGravity(Gravity.CENTER);
@@ -142,10 +159,11 @@ public class ShakeChallenge extends Challenge implements SensorEventListener {
 
         if (accelerometer == null) {
             tvHint.setText("Sensor not detected. Tap button repeatedly to wake:");
-            android.widget.Button btnTap = new android.widget.Button(context);
+            Button btnTap = new Button(context);
             btnTap.setText("Tap to Wake ⚡");
             btnTap.setBackgroundColor(Color.parseColor("#35248A"));
             btnTap.setTextColor(Color.WHITE);
+            AnimationHelper.attachBounceFeedback(btnTap);
             btnTap.setOnClickListener(v -> recordShake());
             content.addView(btnTap);
         }
@@ -166,6 +184,9 @@ public class ShakeChallenge extends Challenge implements SensorEventListener {
         if (progressBar != null) {
             progressBar.setProgress(currentShakes);
         }
+        if (tvIcon != null) {
+            AnimationHelper.pop(tvIcon);
+        }
         if (callback != null) {
             callback.onProgressUpdated(currentShakes, requiredShakes);
         }
@@ -180,26 +201,25 @@ public class ShakeChallenge extends Challenge implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER) return;
-
-        long curTime = System.currentTimeMillis();
-        if ((curTime - lastUpdate) > 100) {
-            long diffTime = (curTime - lastUpdate);
-            lastUpdate = curTime;
-
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             float x = event.values[0];
             float y = event.values[1];
             float z = event.values[2];
 
-            float speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
+            long curTime = System.currentTimeMillis();
+            if ((curTime - lastUpdate) > 100) {
+                long diffTime = (curTime - lastUpdate);
+                lastUpdate = curTime;
 
-            if (speed > SHAKE_THRESHOLD) {
-                recordShake();
+                float speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
+                if (speed > SHAKE_THRESHOLD) {
+                    recordShake();
+                }
+
+                lastX = x;
+                lastY = y;
+                lastZ = z;
             }
-
-            lastX = x;
-            lastY = y;
-            lastZ = z;
         }
     }
 

@@ -93,6 +93,7 @@ public class ChallengeActivity extends AppCompatActivity implements Challenge.Ch
             activeChallenge = ChallengeManager.getInstance(this).getChallengeForAlarm(scheduleId, snoozeCount);
         }
 
+        binding.tvChallengeIcon.setText(activeChallenge.getIconEmoji());
         binding.tvChallengeTitle.setText(activeChallenge.getTitle());
         binding.tvChallengeInstructions.setText(activeChallenge.getInstructions());
 
