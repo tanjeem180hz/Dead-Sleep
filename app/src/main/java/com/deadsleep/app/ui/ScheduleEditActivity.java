@@ -247,8 +247,12 @@ public class ScheduleEditActivity extends AppCompatActivity {
         currentSchedule.setGradualVolume(binding.cbGradualVolume.isChecked());
         currentSchedule.setAutoEscalateChallenge(binding.cbAutoEscalate.isChecked());
 
-        Object selChallenge = binding.spinnerChallengeType.getSelectedItem();
-        currentSchedule.setChallengeType(selChallenge != null ? selChallenge.toString() : Constants.CHALLENGE_RANDOM);
+        int selChallengeIdx = binding.spinnerChallengeType.getSelectedItemPosition();
+        String[] challengeKeys = ChallengeFactory.getAvailableChallengeTypes(this);
+        String challengeType = (selChallengeIdx >= 0 && selChallengeIdx < challengeKeys.length)
+                ? challengeKeys[selChallengeIdx]
+                : Constants.CHALLENGE_RANDOM;
+        currentSchedule.setChallengeType(challengeType);
 
         Object selDiff = binding.spinnerDifficulty.getSelectedItem();
         currentSchedule.setChallengeDifficulty(selDiff != null ? selDiff.toString() : Constants.DIFFICULTY_MEDIUM);

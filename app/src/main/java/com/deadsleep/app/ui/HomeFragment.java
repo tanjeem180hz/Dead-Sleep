@@ -188,9 +188,13 @@ public class HomeFragment extends Fragment {
         Context ctx = getContext();
         if (ctx == null) return;
         String[] types = ChallengeFactory.getAvailableChallengeTypes(ctx);
+        CharSequence[] displayItems = new CharSequence[types.length];
+        for (int i = 0; i < types.length; i++) {
+            displayItems[i] = ChallengeFactory.getChallengeDisplayName(types[i]) + "\n" + ChallengeFactory.getChallengeFriendlyDescription(types[i]);
+        }
         new AlertDialog.Builder(ctx)
-                .setTitle("Select Challenge to Practice 🧠")
-                .setItems(types, (dialog, which) -> {
+                .setTitle("Select Wake Challenge to Practice 🧠")
+                .setItems(displayItems, (dialog, which) -> {
                     String chosenType = types[which];
                     Intent intent = new Intent(ctx, ChallengeActivity.class);
                     intent.putExtra(Constants.EXTRA_IS_PRACTICE, true);
@@ -198,6 +202,7 @@ public class HomeFragment extends Fragment {
                     intent.putExtra(Constants.EXTRA_CHALLENGE_DIFFICULTY, Constants.DIFFICULTY_MEDIUM);
                     startActivity(intent);
                 })
+                .setNegativeButton("Cancel", null)
                 .show();
     }
 
