@@ -21,6 +21,7 @@ import com.deadsleep.app.data.DeadSleepRepository;
 import com.deadsleep.app.databinding.ActivityAlarmRingingBinding;
 import com.deadsleep.app.manager.DeadSleepAlarmManager;
 import com.deadsleep.app.model.SleepSchedule;
+import com.deadsleep.app.util.AnimationHelper;
 import com.deadsleep.app.util.Constants;
 import com.deadsleep.app.util.TimeUtils;
 
@@ -96,13 +97,13 @@ public class AlarmRingingActivity extends AppCompatActivity {
             SleepSchedule schedule = DeadSleepRepository.getInstance(this).getScheduleById(scheduleId);
             final String challengeType = (schedule != null && schedule.getChallengeType() != null)
                     ? schedule.getChallengeType()
-                    : Constants.CHALLENGE_SURPRISE;
+                    : Constants.CHALLENGE_RANDOM;
             runOnUiThread(() -> {
                 if (isFinishing() || isDestroyed() || binding == null) return;
                 binding.tvAlarmChallengeIcon.setText(ChallengeFactory.getChallengeIconEmoji(challengeType));
                 binding.tvAlarmChallengeName.setText(ChallengeFactory.getChallengeDisplayName(challengeType));
                 binding.tvAlarmChallengeDesc.setText(ChallengeFactory.getChallengeFriendlyDescription(challengeType));
-                AnimationHelper.popIn(binding.cardAlarmChallenge);
+                AnimationHelper.pop(binding.cardAlarmChallenge);
             });
         });
     }
