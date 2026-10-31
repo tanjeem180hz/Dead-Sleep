@@ -13,12 +13,16 @@ import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.deadsleep.app.R;
+import com.deadsleep.app.util.AnimationHelper;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Card-flip memory pair matching game.
+ * Friendly card-flip memory pair matching game.
+ * Scaled to be comfortable, relaxing, and quick to solve in the morning.
  */
 public class MemoryChallenge extends Challenge {
 
@@ -55,24 +59,34 @@ public class MemoryChallenge extends Challenge {
         super(difficulty);
         switch (difficulty) {
             case EASY:
-                this.cols = 3;
-                this.rows = 4;
-                this.totalPairs = 6;
+                this.cols = 2;
+                this.rows = 2;
+                this.totalPairs = 2; // 4 cards total (2 pairs) - super easy & friendly
                 break;
             case HARD:
                 this.cols = 4;
-                this.rows = 5;
-                this.totalPairs = 10;
+                this.rows = 2;
+                this.totalPairs = 4; // 8 cards total (4 pairs)
                 break;
             case MEDIUM:
             default:
-                this.cols = 4;
-                this.rows = 4;
-                this.totalPairs = 8;
+                this.cols = 3;
+                this.rows = 2;
+                this.totalPairs = 3; // 6 cards total (3 pairs) - friendly, gentle wake-up
                 break;
         }
         this.totalProblems = totalPairs;
         generate();
+    }
+
+    @Override
+    public String getIconEmoji() {
+        return "🃏";
+    }
+
+    @Override
+    public int getIconDrawableRes() {
+        return R.drawable.ic_challenge_memory;
     }
 
     @Override
@@ -87,7 +101,7 @@ public class MemoryChallenge extends Challenge {
         List<String> selectedSymbols = new ArrayList<>();
         for (int i = 0; i < totalPairs; i++) {
             selectedSymbols.add(SYMBOLS[i % SYMBOLS.length]);
-            selectedSymbols.add(SYMBOLS[i % SYMBOLS.length]); // Add pair
+            selectedSymbols.add(SYMBOLS[i % SYMBOLS.length]); // Add matching pair
         }
         Collections.shuffle(selectedSymbols);
 
@@ -103,12 +117,12 @@ public class MemoryChallenge extends Challenge {
 
     @Override
     public String getTitle() {
-        return "Card Flip Memory Challenge";
+        return "🃏 Memory Match Challenge";
     }
 
     @Override
     public String getInstructions() {
-        return "Find and match all " + totalPairs + " icon pairs to wake up.";
+        return "Find all " + totalPairs + " matching pairs of bedtime symbols to wake up.";
     }
 
     @Override
@@ -119,15 +133,15 @@ public class MemoryChallenge extends Challenge {
         LinearLayout root = new LinearLayout(context);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setGravity(Gravity.CENTER_HORIZONTAL);
-        root.setPadding(16, 12, 16, 12);
+        root.setPadding(16, 16, 16, 16);
 
         TextView tvPairs = new TextView(context);
         tvPairs.setTextColor(Color.parseColor("#9D85FF"));
-        tvPairs.setTextSize(14f);
+        tvPairs.setTextSize(15f);
         tvPairs.setTypeface(Typeface.DEFAULT_BOLD);
         tvPairs.setText("Pairs Matched: 0 / " + totalPairs);
         tvPairs.setGravity(Gravity.CENTER);
-        tvPairs.setPadding(0, 0, 0, 16);
+        tvPairs.setPadding(0, 0, 0, 20);
         root.addView(tvPairs);
 
         GridLayout grid = new GridLayout(context);
@@ -140,14 +154,14 @@ public class MemoryChallenge extends Challenge {
         glp.gravity = Gravity.CENTER_HORIZONTAL;
         grid.setLayoutParams(glp);
 
-        // Dynamically size cards based on grid dimensions
-        int cardWidth = (cols == 3) ? 180 : 150;
-        int cardHeight = (rows == 5) ? 140 : 160;
+        // Generous, comfortable card dimensions
+        int cardWidth = (cols == 2) ? 240 : (cols == 3 ? 200 : 170);
+        int cardHeight = (cols == 2) ? 240 : 200;
 
         for (int i = 0; i < cards.size(); i++) {
             final Card card = cards.get(i);
             final Button btn = new Button(context);
-            btn.setTextSize(26f);
+            btn.setTextSize(32f);
             btn.setText("❓");
             btn.setBackgroundColor(Color.parseColor("#1C2237"));
             btn.setTextColor(Color.WHITE);
@@ -155,8 +169,11 @@ public class MemoryChallenge extends Challenge {
             GridLayout.LayoutParams param = new GridLayout.LayoutParams();
             param.width = cardWidth;
             param.height = cardHeight;
-            param.setMargins(6, 6, 6, 6);
+            param.setMargins(8, 8, 8, 8);
             btn.setLayoutParams(param);
+
+            // Tactile feedback
+            AnimationHelper.attachBounceFeedback(btn);
 
             btn.setOnClickListener(v -> {
                 if (isBusy || card.isMatched || card.isFlipped) return;
@@ -176,34 +193,37 @@ public class MemoryChallenge extends Challenge {
                         firstSelected.isMatched = true;
                         btn.setBackgroundColor(Color.parseColor("#1E382B"));
                         firstButton.setBackgroundColor(Color.parseColor("#1E382B"));
+                        AnimationHelper.pop(btn);
+                        AnimationHelper.pop(firstButton);
+
                         firstSelected = null;
                         firstButton = null;
                         pairsMatched++;
                         currentProgress = pairsMatched;
-                        tvPairs.setText("Pairs Matched: " + pairsMatched + " / " + totalPairs);
                         callback.onProgressUpdated(pairsMatched, totalPairs);
+
+                        tvPairs.setText("Pairs Matched: " + pairsMatched + " / " + totalPairs + " 🎉");
                         isBusy = false;
 
                         if (pairsMatched >= totalPairs) {
-                            callback.onChallengeSolved();
+                            handler.postDelayed(callback::onChallengeSolved, 300);
                         }
                     } else {
-                        // Mismatch
+                        // Mismatch: flip back after brief friendly pause
+                        final Card pendingFirst = firstSelected;
+                        final Button pendingFirstBtn = firstButton;
+                        firstSelected = null;
+                        firstButton = null;
+
                         handler.postDelayed(() -> {
-                            if (card != null) {
-                                card.isFlipped = false;
-                                btn.setText("❓");
-                                btn.setBackgroundColor(Color.parseColor("#1C2237"));
-                            }
-                            if (firstSelected != null) {
-                                firstSelected.isFlipped = false;
-                                firstButton.setText("❓");
-                                firstButton.setBackgroundColor(Color.parseColor("#1C2237"));
-                            }
-                            firstSelected = null;
-                            firstButton = null;
+                            card.isFlipped = false;
+                            pendingFirst.isFlipped = false;
+                            btn.setText("❓");
+                            btn.setBackgroundColor(Color.parseColor("#1C2237"));
+                            pendingFirstBtn.setText("❓");
+                            pendingFirstBtn.setBackgroundColor(Color.parseColor("#1C2237"));
                             isBusy = false;
-                        }, 750);
+                        }, 700);
                     }
                 }
             });
@@ -213,12 +233,5 @@ public class MemoryChallenge extends Challenge {
 
         root.addView(grid);
         return root;
-    }
-
-    @Override
-    public void cleanup() {
-        if (handler != null) {
-            handler.removeCallbacksAndMessages(null);
-        }
     }
 }
