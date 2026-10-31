@@ -13,12 +13,16 @@ import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 
+import com.deadsleep.app.R;
+import com.deadsleep.app.util.AnimationHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 /**
  * Arithmetic challenge scaling from simple sums to multi-step equations with a custom keypad.
+ * Designed to be friendly, engaging, and easy to complete in the morning.
  */
 public class MathChallenge extends Challenge {
 
@@ -43,14 +47,24 @@ public class MathChallenge extends Challenge {
                 this.totalProblems = 1;
                 break;
             case HARD:
-                this.totalProblems = 5;
+                this.totalProblems = 4;
                 break;
             case MEDIUM:
             default:
-                this.totalProblems = 3;
+                this.totalProblems = 2; // Friendly: 2 quick problems for morning wake-up
                 break;
         }
         generate();
+    }
+
+    @Override
+    public String getIconEmoji() {
+        return "🔢";
+    }
+
+    @Override
+    public int getIconDrawableRes() {
+        return R.drawable.ic_challenge_math;
     }
 
     @Override
@@ -66,8 +80,9 @@ public class MathChallenge extends Challenge {
 
     private MathProblem createProblem(Difficulty diff) {
         if (diff == Difficulty.EASY) {
-            int a = random.nextInt(40) + 10;
-            int b = random.nextInt(40) + 10;
+            // Super gentle single/small double-digit sums (e.g. 12 + 7, 25 - 9)
+            int a = random.nextInt(25) + 10;
+            int b = random.nextInt(15) + 3;
             if (random.nextBoolean()) {
                 return new MathProblem(a + " + " + b, a + b);
             } else {
@@ -76,39 +91,37 @@ public class MathChallenge extends Challenge {
                 return new MathProblem(max + " - " + min, max - min);
             }
         } else if (diff == Difficulty.MEDIUM) {
+            // Friendly Medium: clean multiplication or 2-digit sums (e.g. 6 × 7, 34 + 18, 52 - 19)
             int op = random.nextInt(3);
             if (op == 0) {
-                // a * b + c
-                int a = random.nextInt(9) + 3;
-                int b = random.nextInt(9) + 2;
-                int c = random.nextInt(30) + 5;
-                return new MathProblem(a + " × " + b + " + " + c, (a * b) + c);
+                // Friendly multiplication (e.g. 6 × 8 = 48)
+                int a = random.nextInt(6) + 4; // 4 to 9
+                int b = random.nextInt(7) + 3; // 3 to 9
+                return new MathProblem(a + " × " + b, a * b);
             } else if (op == 1) {
-                // a * b - c
-                int a = random.nextInt(9) + 3;
-                int b = random.nextInt(9) + 2;
-                int c = random.nextInt(15) + 2;
-                return new MathProblem(a + " × " + b + " - " + c, (a * b) - c);
+                // Friendly addition (e.g. 26 + 18 = 44)
+                int a = random.nextInt(30) + 12;
+                int b = random.nextInt(25) + 11;
+                return new MathProblem(a + " + " + b, a + b);
             } else {
-                // a + b + c
-                int a = random.nextInt(50) + 20;
-                int b = random.nextInt(50) + 20;
-                int c = random.nextInt(30) + 10;
-                return new MathProblem(a + " + " + b + " + " + c, a + b + c);
+                // Friendly subtraction (e.g. 48 - 19 = 29)
+                int a = random.nextInt(35) + 25;
+                int b = random.nextInt(20) + 10;
+                return new MathProblem(a + " - " + b, a - b);
             }
         } else {
-            // HARD: brackets or larger multiplication
+            // HARD: 3-number equations
             int op = random.nextInt(2);
             if (op == 0) {
-                int a = random.nextInt(20) + 10;
-                int b = random.nextInt(15) + 5;
-                int c = random.nextInt(5) + 2;
-                return new MathProblem("(" + a + " + " + b + ") × " + c, (a + b) * c);
+                int a = random.nextInt(8) + 4;
+                int b = random.nextInt(8) + 3;
+                int c = random.nextInt(20) + 5;
+                return new MathProblem(a + " × " + b + " + " + c, (a * b) + c);
             } else {
-                int a = random.nextInt(15) + 11;
-                int b = random.nextInt(9) + 4;
-                int c = random.nextInt(40) + 20;
-                return new MathProblem(a + " × " + b + " - " + c, (a * b) - c);
+                int a = random.nextInt(40) + 20;
+                int b = random.nextInt(30) + 15;
+                int c = random.nextInt(20) + 10;
+                return new MathProblem(a + " + " + b + " - " + c, a + b - c);
             }
         }
     }
@@ -123,12 +136,12 @@ public class MathChallenge extends Challenge {
 
     @Override
     public String getTitle() {
-        return "Math Arithmetic Challenge";
+        return "🔢 Math Puzzle Challenge";
     }
 
     @Override
     public String getInstructions() {
-        return "Solve " + totalProblems + " arithmetic problems to wake up.";
+        return "Solve " + totalProblems + " friendly math problem" + (totalProblems > 1 ? "s" : "") + " to wake up.";
     }
 
     @Override
@@ -221,6 +234,9 @@ public class MathChallenge extends Challenge {
             param.setMargins(10, 10, 10, 10);
             btn.setLayoutParams(param);
 
+            // Tactile Spring Touch Bounce
+            AnimationHelper.attachBounceFeedback(btn);
+
             btn.setOnClickListener(v -> {
                 if ("⌫".equals(key)) {
                     if (currentInput.length() > 0) {
@@ -235,6 +251,7 @@ public class MathChallenge extends Challenge {
                             currentIndex++;
                             currentProgress++;
                             callback.onProgressUpdated(currentProgress, totalProblems);
+                            AnimationHelper.pop(card);
 
                             if (currentIndex >= totalProblems) {
                                 callback.onChallengeSolved();
@@ -245,11 +262,12 @@ public class MathChallenge extends Challenge {
                                 tvInput.setText("?");
                             }
                         } else {
-                            callback.onChallengeFailed("Incorrect answer! Generating new problem.");
+                            callback.onChallengeFailed("Try again! A new friendly problem has been set.");
                             currentInput.setLength(0);
                             tvInput.setText("?");
                             problems.set(currentIndex, createProblem(difficulty));
                             tvExpression.setText(problems.get(currentIndex).expression);
+                            AnimationHelper.pop(card);
                         }
                     } catch (NumberFormatException ignored) {}
                 } else {
