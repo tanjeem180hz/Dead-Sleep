@@ -45,9 +45,9 @@ public class ChallengeValidationTest {
         assertEquals(3, medium.getTotalProblems());
         assertEquals("🃏", medium.getIconEmoji());
 
-        // HARD reduced from 10 pairs to 5 pairs (10 cards total)
+        // HARD reduced from 10 pairs to 4 pairs (8 cards total)
         MemoryChallenge hard = new MemoryChallenge(Challenge.Difficulty.HARD);
-        assertEquals(5, hard.getTotalProblems());
+        assertEquals(4, hard.getTotalProblems());
     }
 
     @Test
@@ -95,9 +95,9 @@ public class ChallengeValidationTest {
         assertEquals(18, medium.getTotalProblems());
         assertEquals("📳", medium.getIconEmoji());
 
-        // HARD reduced from 60 to 35 shakes
+        // HARD reduced from 60 to 32 shakes
         ShakeChallenge hard = new ShakeChallenge(Challenge.Difficulty.HARD);
-        assertEquals(35, hard.getTotalProblems());
+        assertEquals(32, hard.getTotalProblems());
     }
 
     @Test
