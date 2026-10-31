@@ -15,6 +15,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.deadsleep.app.challenge.ChallengeFactory;
 import com.deadsleep.app.data.AppDatabase;
 import com.deadsleep.app.data.DeadSleepRepository;
 import com.deadsleep.app.databinding.ActivityAlarmRingingBinding;
@@ -52,6 +53,10 @@ public class AlarmRingingActivity extends AppCompatActivity {
             binding.tvAlarmRingingLabel.setText(scheduleLabel + " ☀️");
         }
 
+        AnimationHelper.attachBounceFeedback(binding.btnSolveChallenge);
+        AnimationHelper.attachBounceFeedback(binding.btnSnoozeAlarm);
+
+        setupChallengeInfo();
         setupSnoozeButton();
 
         binding.btnSolveChallenge.setOnClickListener(v -> {
@@ -84,6 +89,22 @@ public class AlarmRingingActivity extends AppCompatActivity {
             );
         }
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    private void setupChallengeInfo() {
+        AppDatabase.getExecutor().execute(() -> {
+            SleepSchedule schedule = DeadSleepRepository.getInstance(this).getScheduleById(scheduleId);
+            final String challengeType = (schedule != null && schedule.getChallengeType() != null)
+                    ? schedule.getChallengeType()
+                    : Constants.CHALLENGE_SURPRISE;
+            runOnUiThread(() -> {
+                if (isFinishing() || isDestroyed() || binding == null) return;
+                binding.tvAlarmChallengeIcon.setText(ChallengeFactory.getChallengeIconEmoji(challengeType));
+                binding.tvAlarmChallengeName.setText(ChallengeFactory.getChallengeDisplayName(challengeType));
+                binding.tvAlarmChallengeDesc.setText(ChallengeFactory.getChallengeFriendlyDescription(challengeType));
+                AnimationHelper.popIn(binding.cardAlarmChallenge);
+            });
+        });
     }
 
     private void setupSnoozeButton() {
