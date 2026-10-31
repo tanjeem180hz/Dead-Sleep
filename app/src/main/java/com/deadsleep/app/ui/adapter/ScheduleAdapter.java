@@ -11,6 +11,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.deadsleep.app.R;
+import com.deadsleep.app.challenge.ChallengeFactory;
 import com.deadsleep.app.model.SleepSchedule;
 
 import java.util.ArrayList;
@@ -57,7 +58,10 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedu
         holder.tvTimes.setText(schedule.getFormattedSleepTime(ctx) + " → " + schedule.getFormattedWakeTime(ctx));
         holder.tvDays.setText(schedule.getFormattedDays());
         holder.tvDuration.setText(schedule.getFormattedDuration());
-        holder.tvChallenge.setText(schedule.getChallengeType() + " (" + schedule.getChallengeDifficulty() + ")");
+        String challengeType = schedule.getChallengeType() != null ? schedule.getChallengeType() : "";
+        String icon = ChallengeFactory.getChallengeIconEmoji(challengeType);
+        String displayName = ChallengeFactory.getChallengeDisplayName(challengeType);
+        holder.tvChallenge.setText(icon + " " + displayName + " • " + schedule.getChallengeDifficulty());
 
         holder.switchEnabled.setOnCheckedChangeListener(null);
         holder.switchEnabled.setChecked(schedule.isEnabled());
