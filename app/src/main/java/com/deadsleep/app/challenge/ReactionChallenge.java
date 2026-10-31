@@ -13,10 +13,14 @@ import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 
+import com.deadsleep.app.R;
+import com.deadsleep.app.util.AnimationHelper;
+
 import java.util.Random;
 
 /**
  * Reaction time test measuring cognitive alertness before waking.
+ * Configured with friendly human reaction thresholds and forgiving retry rules.
  */
 public class ReactionChallenge extends Challenge {
 
@@ -28,7 +32,7 @@ public class ReactionChallenge extends Challenge {
         FALSE_START
     }
 
-    private final int targetRounds = 3;
+    private final int targetRounds;
     private final int thresholdMs;
     private int completedRounds = 0;
     private long greenTimestamp = 0;
@@ -41,18 +45,31 @@ public class ReactionChallenge extends Challenge {
         super(difficulty);
         switch (difficulty) {
             case EASY:
-                this.thresholdMs = 650;
+                this.targetRounds = 1;
+                this.thresholdMs = 850;
                 break;
             case HARD:
-                this.thresholdMs = 340;
+                this.targetRounds = 3;
+                this.thresholdMs = 450;
                 break;
             case MEDIUM:
             default:
-                this.thresholdMs = 480;
+                this.targetRounds = 2; // Friendly: 2 quick rounds (was 3)
+                this.thresholdMs = 650; // Comfortable 650ms threshold (was 480ms)
                 break;
         }
         this.totalProblems = targetRounds;
         generate();
+    }
+
+    @Override
+    public String getIconEmoji() {
+        return "⚡";
+    }
+
+    @Override
+    public int getIconDrawableRes() {
+        return R.drawable.ic_challenge_reaction;
     }
 
     @Override
@@ -71,12 +88,12 @@ public class ReactionChallenge extends Challenge {
 
     @Override
     public String getTitle() {
-        return "Reaction Time Test";
+        return "⚡ Reaction Alert Test";
     }
 
     @Override
     public String getInstructions() {
-        return "Wait for the box to turn GREEN, then tap as fast as you can! Target: under " + thresholdMs + "ms.";
+        return "Wait for the box to turn GREEN, then tap! Target: < " + thresholdMs + "ms.";
     }
 
     @Override
@@ -131,12 +148,16 @@ public class ReactionChallenge extends Challenge {
         card.addView(cardContent);
         root.addView(card);
 
+        // Tactile bounce feedback
+        AnimationHelper.attachBounceFeedback(card);
+
         Runnable triggerGreen = () -> {
             currentState = State.GREEN_TAP;
             greenTimestamp = System.currentTimeMillis();
             card.setCardBackgroundColor(Color.parseColor("#2E7D32")); // Green
             tvPrompt.setText("⚡ TAP NOW! ⚡");
-            tvSub.setText("Quickly!");
+            tvSub.setText("Quickly tap anywhere in the box!");
+            AnimationHelper.pop(card);
         };
 
         card.setOnClickListener(v -> {
@@ -145,20 +166,21 @@ public class ReactionChallenge extends Challenge {
                 currentState = State.RED_WAIT;
                 card.setCardBackgroundColor(Color.parseColor("#801E23"));
                 tvPrompt.setText("Wait for GREEN...");
-                tvSub.setText("Get ready...");
+                tvSub.setText("Get ready to tap...");
 
-                // Random delay between 2 and 4.5 seconds
-                long delay = 2000 + random.nextInt(2500);
+                // Random delay between 1.5 and 3.5 seconds
+                long delay = 1500 + random.nextInt(2000);
                 handler.postDelayed(triggerGreen, delay);
 
             } else if (currentState == State.RED_WAIT) {
-                // False start!
+                // False start! Friendly retry without losing previous completed rounds
                 handler.removeCallbacks(triggerGreen);
                 currentState = State.FALSE_START;
                 card.setCardBackgroundColor(Color.parseColor("#5A1014"));
-                tvPrompt.setText("Too early! ❌");
-                tvSub.setText("Tap to retry this round.");
-                callback.onChallengeFailed("Too early! Wait for green.");
+                tvPrompt.setText("A little too early! 😊");
+                tvSub.setText("Tap here to try this round again.");
+                callback.onChallengeFailed("Too early! Wait for the box to turn green.");
+                AnimationHelper.pop(card);
 
             } else if (currentState == State.GREEN_TAP) {
                 long reactionTime = System.currentTimeMillis() - greenTimestamp;
@@ -166,26 +188,29 @@ public class ReactionChallenge extends Challenge {
                     completedRounds++;
                     currentProgress = completedRounds;
                     callback.onProgressUpdated(completedRounds, targetRounds);
+                    AnimationHelper.pop(card);
 
                     if (completedRounds >= targetRounds) {
                         currentState = State.SUCCESS;
                         card.setCardBackgroundColor(Color.parseColor("#1B5E20"));
                         tvPrompt.setText("Passed! (" + reactionTime + "ms) ☀️");
-                        tvSub.setText("Challenge solved!");
+                        tvSub.setText("Great reflexes! Challenge solved.");
                         callback.onChallengeSolved();
                     } else {
                         currentState = State.WAITING_TO_START;
                         tvHeader.setText("Round " + (completedRounds + 1) + " of " + targetRounds);
                         card.setCardBackgroundColor(Color.parseColor("#35248A"));
-                        tvPrompt.setText("Good! (" + reactionTime + "ms)");
-                        tvSub.setText("Tap to start next round.");
+                        tvPrompt.setText("Great! (" + reactionTime + "ms)");
+                        tvSub.setText("Tap to start Round " + (completedRounds + 1));
                     }
                 } else {
+                    // Missed threshold
                     currentState = State.WAITING_TO_START;
-                    callback.onChallengeFailed("Too slow (" + reactionTime + "ms). Must be under " + thresholdMs + "ms.");
                     card.setCardBackgroundColor(Color.parseColor("#801E23"));
-                    tvPrompt.setText("Too slow: " + reactionTime + "ms");
-                    tvSub.setText("Tap to try again.");
+                    tvPrompt.setText(reactionTime + "ms (Target < " + thresholdMs + "ms)");
+                    tvSub.setText("Almost there! Tap to try again.");
+                    callback.onChallengeFailed("A little slow (" + reactionTime + "ms). Try again!");
+                    AnimationHelper.pop(card);
                 }
             }
         });
