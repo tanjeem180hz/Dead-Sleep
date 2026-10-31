@@ -71,6 +71,16 @@ public abstract class Challenge {
     public abstract String getInstructions();
 
     /**
+     * Returns the graphical emoji representation of this challenge.
+     */
+    public abstract String getIconEmoji();
+
+    /**
+     * Returns the vector drawable resource ID representing this challenge.
+     */
+    public abstract int getIconDrawableRes();
+
+    /**
      * Dynamically renders and binds the interactive puzzle view.
      */
     public abstract View renderView(Context context, ViewGroup container, ChallengeCallback callback);
